@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Track Order - ITI Chai Wala</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:#fff8f0;
+    color:#333;
+}
+
+header{
+    background:linear-gradient(135deg,#6b2f13,#b85c1c);
+    color:white;
+    text-align:center;
+    padding:25px 15px;
+}
+
+header h1{
+    font-size:26px;
+}
+
+header p{
+    margin-top:7px;
+}
+
+.container{
+    max-width:600px;
+    margin:auto;
+    padding:20px 15px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 3px 12px rgba(0,0,0,.12);
+    margin-bottom:18px;
+}
+
+input{
+    width:100%;
+    padding:14px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    font-size:16px;
+    margin-top:10px;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    margin-top:12px;
+    border:none;
+    border-radius:10px;
+    background:#e67e22;
+    color:white;
+    font-size:17px;
+    font-weight:bold;
+}
+
+.order-info{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.order-id{
+    color:#8b4513;
+    font-weight:bold;
+    margin-top:8px;
+}
+
+.steps{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.step{
+    padding:15px;
+    border-radius:10px;
+    background:#eee;
+    font-weight:bold;
+}
+
+.step.active{
+    background:#e67e22;
+    color:white;
+}
+
+.step.done{
+    background:#27ae60;
+    color:white;
+}
+
+.message{
+    text-align:center;
+    margin-top:15px;
+    color:#777;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>☕ ITI Chai Wala</h1>
+    <p>Track Your Order</p>
+</header>
+
+<div class="container">
+
+<div class="card">
+
+    <h2>📦 Track Order</h2>
+
+    <input
+        type="text"
+        id="orderId"
+        placeholder="Enter your Order ID"
+    >
+
+    <button onclick="trackOrder()">
+        🔍 Track Order
+    </button>
+
+    <div class="message" id="message"></div>
+
+</div>
+
+
+<div class="card" id="result" style="display:none;">
+
+    <div class="order-info">
+
+        <h2>🍽️ Your Order</h2>
+
+        <div class="order-id" id="showOrderId"></div>
+
+        <p id="showTable"></p>
+
+    </div>
+
+
+    <div class="steps">
+
+        <div class="step" id="stepNew">
+            🆕 Order Placed
+        </div>
+
+        <div class="step" id="stepPreparing">
+            🔥 Preparing
+        </div>
+
+        <div class="step" id="stepComplete">
+            ✅ Complete
+        </div>
+
+        <div class="step" id="stepDelivered">
+            🚚 Delivered
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<script>
+
+const BACKEND_URL =
+"https://script.google.com/macros/s/AKfycbx7PWk-_E0MU2bn5VsLMVHGMGbZFVjRaSYCXJXn50ay2_kodfrKc43EddUNc7EujMJb8g/exec";
+
+
+async function trackOrder(){
+
+    const orderId =
+        document.getElementById("orderId").value.trim();
+
+    const message =
+        document.getElementById("message");
+
+    const result =
+        document.getElementById("result");
+
+
+    if(!orderId){
+
+        message.innerText =
+        "कृपया Order ID डालें।";
+
+        result.style.display="none";
+
+        return;
+    }
+
+
+    message.innerText="Order खोज रहे हैं...";
+
+
+    try{
+
+        const response =
+            await fetch(BACKEND_URL);
+
+        const data =
+            await response.json();
+
+
+        if(!Array.isArray(data) || data.length < 2){
+
+            message.innerText =
+            "Order नहीं मिला।";
+
+            result.style.display="none";
+
+            return;
+        }
+
+
+        const rows=data.slice(1);
+
+
+        const matchingRows =
+            rows.filter(row =>
+                String(row[7]).trim() === orderId
+            );
+
+
+        if(matchingRows.length===0){
+
+            message.innerText =
+            "❌ Order ID नहीं मिला।";
+
+            result.style.display="none";
+
+            return;
+        }
+
+
+        const firstRow=matchingRows[0];
+
+        const table=firstRow[1];
+
+        const status=firstRow[6] || "New";
+
+
+        document.getElementById("showOrderId")
+            .innerText="Order ID: "+orderId;
+
+        document.getElementById("showTable")
+            .innerText="🪑 Table: "+table;
+
+
+        updateSteps(status);
+
+
+        result.style.display="block";
+
+        message.innerText =
+        "Order status updated.";
+
+
+    }catch(error){
+
+        message.innerText =
+        "Internet या server में problem है।";
+
+        result.style.display="none";
+
+    }
+
+}
+
+
+function updateSteps(status){
+
+    const steps=[
+        document.getElementById("stepNew"),
+        document.getElementById("stepPreparing"),
+        document.getElementById("stepComplete"),
+        document.getElementById("stepDelivered")
+    ];
+
+
+    steps.forEach(step=>{
+        step.classList.remove("active");
+        step.classList.remove("done");
+    });
+
+
+    if(status==="New"){
+
+        steps[0].classList.add("active");
+
+    }
+
+
+    if(status==="Preparing"){
+
+        steps[0].classList.add("done");
+        steps[1].classList.add("active");
+
+    }
+
+
+    if(status==="Complete"){
+
+        steps[0].classList.add("done");
+        steps[1].classList.add("done");
+        steps[2].classList.add("active");
+
+    }
+
+
+    if(status==="Delivered"){
+
+        steps[0].classList.add("done");
+        steps[1].classList.add("done");
+        steps[2].classList.add("done");
+        steps[3].classList.add("active");
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
