@@ -3,7 +3,6 @@
 <head>
 
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>ITI Chai Wala - Menu</title>
@@ -258,6 +257,44 @@ header p{
     color:#777;
 }
 
+
+/* =========================
+TRACK ORDER BOX
+========================= */
+
+.track-box{
+    display:none;
+    background:white;
+    margin:15px 10px;
+    padding:18px;
+    border-radius:13px;
+    box-shadow:0 3px 12px #00000012;
+    text-align:center;
+}
+
+.track-box h3{
+    color:#5b2c06;
+    margin-bottom:8px;
+}
+
+.track-id{
+    font-weight:bold;
+    color:#7a3e0c;
+    margin-bottom:12px;
+    word-break:break-all;
+}
+
+.track-btn{
+    display:block;
+    width:100%;
+    padding:13px;
+    background:#3498db;
+    color:white;
+    text-decoration:none;
+    border-radius:9px;
+    font-weight:bold;
+}
+
 </style>
 
 </head>
@@ -278,6 +315,26 @@ header p{
 <span id="tableNumber">--</span>
 
 </div>
+
+
+<!-- TRACK ORDER -->
+
+<div class="track-box" id="trackBox">
+
+<h3>📦 Your Order</h3>
+
+<div class="track-id" id="trackOrderId"></div>
+
+<a
+id="trackButton"
+class="track-btn"
+href="#"
+>
+🔍 Track Order Status
+</a>
+
+</div>
+
 
 <div class="search">
 
@@ -312,6 +369,7 @@ View Cart
 </button>
 
 </div>
+
 
 <div class="overlay" id="cartOverlay">
 
@@ -348,10 +406,12 @@ Close
 
 </div>
 
+
 <script>
 
+
 /* =========================
-NEW ITI CHAI WALA BACKEND
+BACKEND
 ========================= */
 
 const BACKEND_URL =
@@ -776,13 +836,9 @@ existing.qty++;
 cart.push({
 
 key:key,
-
 name:name,
-
 price:Number(price),
-
 qty:1,
-
 size:size
 
 });
@@ -1046,11 +1102,8 @@ table:table,
 items:cart.map(item => ({
 
 name:item.name,
-
 price:item.price,
-
 qty:item.qty,
-
 size:item.size
 
 }))
@@ -1075,9 +1128,40 @@ await response.json();
 
 if(result.success){
 
+/* =========================
+SHOW ORDER ID
+========================= */
+
+const orderId =
+result.orderId;
+
+document.getElementById("trackOrderId")
+.innerText =
+"Order ID: " + orderId;
+
+
+/* =========================
+TRACK LINK
+========================= */
+
+document.getElementById("trackButton")
+.href =
+"order-status.html?order=" +
+encodeURIComponent(orderId);
+
+
+/* =========================
+SHOW TRACK BOX
+========================= */
+
+document.getElementById("trackBox")
+.style.display="block";
+
+
 alert(
 "✅ आपका order successfully भेज दिया गया!\n\nOrder ID: " +
-result.orderId
+orderId +
+"\n\nनीचे Track Order से अपना order status देख सकते हैं।"
 );
 
 cart=[];
@@ -1085,6 +1169,7 @@ cart=[];
 updateCart();
 
 closeCart();
+
 
 }else{
 
@@ -1126,4 +1211,4 @@ updateCart();
 </script>
 
 </body>
-</html>
+    </html>
