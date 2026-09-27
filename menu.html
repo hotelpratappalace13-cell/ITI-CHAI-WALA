@@ -452,6 +452,7 @@ const menuData = [
 {
 category:"COFFEE",
 items:[
+["Chai",20],
 ["Coldrink",30],
 ["Hot Coffee",40],
 ["Cold Coffee",70],
@@ -578,6 +579,13 @@ items:[
 ["Chilly Garlic Fried Rice",80],
 ["Paneer Fried Rice",90]
 ]
+},
+
+{
+category:"WATER",
+items:[
+["Water Bottle",{Small:10,Big:20}]
+]
 }
 
 ];
@@ -679,8 +687,13 @@ ${name}
 ${
 typeof price==="object"
 
+? (
+price.Half !== undefined
 ? `Half ₹${price.Half}<br>
 Full ₹${price.Full}`
+: `Small ₹${price.Small}<br>
+Big ₹${price.Big}`
+)
 
 : `₹${price}`
 }
@@ -690,6 +703,8 @@ Full ₹${price.Full}`
 `;
 
 if(typeof price==="object"){
+
+if(price.Half !== undefined){
 
 html += `
 
@@ -737,6 +752,52 @@ ${price.Half},
 
 html += `
 
+<div class="options">
+
+<button
+class="option selected"
+onclick="
+selectOption(this,'Small')
+">
+
+Small ₹${price.Small}
+
+</button>
+
+<button
+class="option"
+onclick="
+selectOption(this,'Big')
+">
+
+Big ₹${price.Big}
+
+</button>
+
+</div>
+
+<button
+class="add-btn"
+onclick="
+addItem(
+'${name}',
+${price.Small},
+'Small'
+)
+">
+
++ Add Small ₹${price.Small}
+
+</button>
+
+`;
+
+}
+
+}else{
+
+html += `
+
 <button
 class="add-btn"
 onclick="
@@ -767,7 +828,7 @@ menu.innerHTML += html;
 
 
 /* =========================
-HALF / FULL
+HALF / FULL / SMALL / BIG
 ========================= */
 
 function selectOption(button,type){
