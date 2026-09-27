@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ITI Chai Wala - Kitchen</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f5f5f5;
+    color:#222;
+}
+
+header{
+    background:#6b2f13;
+    color:white;
+    text-align:center;
+    padding:20px 10px;
+}
+
+header h1{
+    font-size:25px;
+}
+
+header p{
+    margin-top:6px;
+    font-size:14px;
+}
+
+.container{
+    max-width:800px;
+    margin:auto;
+    padding:15px;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+    gap:10px;
+}
+
+.count{
+    font-weight:bold;
+}
+
+.refresh{
+    border:none;
+    background:#e67e22;
+    color:white;
+    padding:10px 15px;
+    border-radius:8px;
+    font-weight:bold;
+}
+
+.order{
+    background:white;
+    border-radius:14px;
+    padding:16px;
+    margin-bottom:15px;
+    box-shadow:0 3px 10px rgba(0,0,0,.12);
+}
+
+.order.new{
+    border-left:6px solid #e67e22;
+}
+
+.order.preparing{
+    border-left:6px solid #3498db;
+}
+
+.order.complete{
+    border-left:6px solid #27ae60;
+}
+
+.order.delivered{
+    border-left:6px solid #777;
+}
+
+.order-head{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:12px;
+}
+
+.table{
+    font-size:20px;
+    font-weight:bold;
+    color:#8b4513;
+}
+
+.time{
+    font-size:12px;
+    color:#777;
+}
+
+.item{
+    display:flex;
+    justify-content:space-between;
+    padding:8px 0;
+    border-bottom:1px solid #eee;
+}
+
+.total{
+    text-align:right;
+    font-size:18px;
+    font-weight:bold;
+    margin-top:12px;
+}
+
+.status{
+    margin-top:12px;
+    font-weight:bold;
+}
+
+.buttons{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:12px;
+}
+
+.buttons button{
+    border:none;
+    padding:10px 12px;
+    border-radius:8px;
+    color:white;
+    font-weight:bold;
+}
+
+.prepare{
+    background:#3498db;
+}
+
+.complete{
+    background:#27ae60;
+}
+
+.delivered{
+    background:#555;
+}
+
+.delete{
+    background:#c0392b;
+}
+
+.empty{
+    background:white;
+    padding:30px;
+    text-align:center;
+    border-radius:12px;
+    color:#777;
+}
+
+@media(max-width:500px){
+
+    .order-head{
+        flex-direction:column;
+    }
+
+    .buttons button{
+        flex:1;
+        min-width:120px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🍳 ITI Chai Wala</h1>
+    <p>Kitchen Order Panel</p>
+</header>
+
+<div class="container">
+
+    <div class="topbar">
+        <div class="count" id="orderCount">
+            Orders: 0
+        </div>
+
+        <button class="refresh" onclick="loadOrders()">
+            🔄 Refresh
+        </button>
+    </div>
+
+    <div id="orders">
+        <div class="empty">
+            Loading orders...
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+const BACKEND_URL =
+"https://script.google.com/macros/s/AKfycbx7PWk-_E0MU2bn5VsLMVHGMGbZFVjRaSYCXJXn50ay2_kodfrKc43EddUNc7EujMJb8g/exec";
+
+
+let allOrders = [];
+
+
+async function loadOrders(){
+
+    const box = document.getElementById("orders");
+
+    try{
+
+        const response = await fetch(BACKEND_URL);
+
+        const data = await response.json();
+
+        if(!Array.isArray(data) || data.length < 2){
+
+            box.innerHTML =
+            '<div class="empty">कोई order नहीं है।</div>';
+
+            document.getElementById("orderCount").innerText =
+            "Orders: 0";
+
+            return;
+        }
+
+        const rows = data.slice(1);
+
+        const orders = {};
+
+        rows.forEach(row => {
+
+            const time = row[0];
+            const table = row[1];
+            const item = row[2];
+            const qty = Number(row[3]);
+            const price = Number(row[4]);
+            const total = Number(row[5]);
+            const status = row[6] || "New";
+            const orderId = row[7];
+
+            if(!orders[orderId]){
+
+                orders[orderId] = {
+                    orderId: orderId,
+                    time: time,
+                    table: table,
+                    status: status,
+                    items: [],
+                    total: 0
+                };
+
+            }
+
+            orders[orderId].items.push({
+                name: item,
+                qty: qty,
+                price: price,
+                total: total
+            });
+
+            orders[orderId].total += total;
+
+        });
+
+
+        allOrders = Object.values(orders);
+
+        // नए orders सबसे ऊपर
+        allOrders.reverse();
+
+        document.getElementById("orderCount").innerText =
+        "Orders: " + allOrders.length;
+
+        renderOrders();
+
+    }catch(error){
+
+        box.innerHTML =
+        '<div class="empty">Orders load नहीं हो सके। Internet check करें।</div>';
+
+        console.error(error);
+    }
+}
+
+
+function renderOrders(){
+
+    const box = document.getElementById("orders");
+
+    if(allOrders.length === 0){
+
+        box.innerHTML =
+        '<div class="empty">अभी कोई order नहीं है।</div>';
+
+        return;
+    }
+
+
+    box.innerHTML = "";
+
+
+    allOrders.forEach(order => {
+
+        const card = document.createElement("div");
+
+        card.className =
+        "order " + order.status.toLowerCase();
+
+
+        let itemsHTML = "";
+
+        order.items.forEach(item => {
+
+            itemsHTML += `
+                <div class="item">
+                    <span>
+                        ${item.name} × ${item.qty}
+                    </span>
+
+                    <span>
+                        ₹${item.total}
+                    </span>
+                </div>
+            `;
+
+        });
+
+
+        card.innerHTML = `
+
+            <div class="order-head">
+
+                <div class="table">
+                    🪑 Table ${order.table}
+                </div>
+
+                <div class="time">
+                    ${order.time}
+                </div>
+
+            </div>
+
+
+            <div>
+                ${itemsHTML}
+            </div>
+
+
+            <div class="total">
+                Total: ₹${order.total}
+            </div>
+
+
+            <div class="status">
+                Status: ${order.status}
+            </div>
+
+
+            <div class="buttons">
+
+                <button
+                    class="prepare"
+                    onclick="changeStatus('${order.orderId}','Preparing')">
+                    🔥 Preparing
+                </button>
+
+                <button
+                    class="complete"
+                    onclick="changeStatus('${order.orderId}','Complete')">
+                    ✅ Complete
+                </button>
+
+                <button
+                    class="delivered"
+                    onclick="changeStatus('${order.orderId}','Delivered')">
+                    🚚 Delivered
+                </button>
+
+                <button
+                    class="delete"
+                    onclick="deleteOrder('${order.orderId}')">
+                    🗑️ Delete
+                </button>
+
+            </div>
+
+        `;
+
+
+        box.appendChild(card);
+
+    });
+
+}
+
+
+async function changeStatus(orderId,status){
+
+    try{
+
+        await fetch(BACKEND_URL,{
+            method:"POST",
+
+            body:JSON.stringify({
+                action:"updateStatus",
+                orderId:orderId,
+                status:status
+            })
+
+        });
+
+        loadOrders();
+
+    }catch(error){
+
+        alert("Status update नहीं हुआ।");
+
+    }
+
+}
+
+
+async function deleteOrder(orderId){
+
+    const confirmDelete =
+    confirm("क्या आप इस पूरे order को delete करना चाहते हैं?");
+
+    if(!confirmDelete){
+        return;
+    }
+
+
+    try{
+
+        await fetch(BACKEND_URL,{
+            method:"POST",
+
+            body:JSON.stringify({
+                action:"deleteOrder",
+                orderId:orderId
+            })
+
+        });
+
+        loadOrders();
+
+    }catch(error){
+
+        alert("Order delete नहीं हुआ।");
+
+    }
+
+}
+
+
+// पहली बार load
+loadOrders();
+
+
+// हर 10 सेकंड में refresh
+setInterval(loadOrders,10000);
+
+</script>
+
+</body>
+</html>
