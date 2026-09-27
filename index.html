@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>ITI Chai Wala</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f7f1e8;
+    color:#2b1708;
+}
+
+/* HEADER */
+
+header{
+    background:linear-gradient(135deg,#3b1d08,#7a3e0c);
+    color:white;
+    text-align:center;
+    padding:30px 15px;
+}
+
+.logo-circle{
+    width:100px;
+    height:100px;
+    margin:auto;
+    background:white;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:48px;
+}
+
+header h1{
+    font-size:32px;
+    margin-top:15px;
+}
+
+.tagline{
+    margin-top:7px;
+    font-size:14px;
+    letter-spacing:2px;
+    opacity:.9;
+}
+
+/* INFO */
+
+.info{
+    background:white;
+    margin:15px;
+    padding:18px;
+    border-radius:15px;
+    box-shadow:0 4px 15px #00000012;
+}
+
+.info p{
+    margin:8px 0;
+    font-size:15px;
+}
+
+/* TABLE */
+
+.table-box{
+    margin:15px;
+    background:#fff0c7;
+    border:1px solid #e6c56b;
+    padding:16px;
+    border-radius:15px;
+    text-align:center;
+    font-weight:bold;
+    font-size:18px;
+}
+
+/* WELCOME */
+
+.welcome{
+    text-align:center;
+    padding:20px 15px;
+}
+
+.welcome h2{
+    font-size:25px;
+    margin-bottom:8px;
+}
+
+.welcome p{
+    color:#6d5a4b;
+}
+
+/* ORDER BUTTON */
+
+.order-btn{
+    display:block;
+    width:calc(100% - 30px);
+    margin:10px 15px;
+    padding:16px;
+    background:#e67e22;
+    color:white;
+    border:none;
+    border-radius:13px;
+    font-size:18px;
+    font-weight:bold;
+    box-shadow:0 5px 12px #e67e2250;
+}
+
+.order-btn:active{
+    transform:scale(.98);
+}
+
+/* FEATURES */
+
+.features{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    padding:15px;
+}
+
+.feature{
+    background:white;
+    padding:18px 10px;
+    border-radius:15px;
+    text-align:center;
+    box-shadow:0 3px 12px #00000010;
+}
+
+.feature-icon{
+    font-size:30px;
+    margin-bottom:8px;
+}
+
+.feature b{
+    display:block;
+    margin-bottom:5px;
+}
+
+.feature small{
+    color:#777;
+}
+
+/* REVIEW */
+
+.review{
+    background:white;
+    margin:15px;
+    padding:22px;
+    border-radius:15px;
+    text-align:center;
+}
+
+.review h2{
+    margin-bottom:8px;
+}
+
+.review p{
+    color:#666;
+    font-size:14px;
+}
+
+.review-btn{
+    margin-top:15px;
+    padding:12px 20px;
+    background:#4285f4;
+    color:white;
+    border:none;
+    border-radius:9px;
+    font-weight:bold;
+}
+
+/* FOOTER */
+
+footer{
+    margin-top:25px;
+    background:#291407;
+    color:white;
+    text-align:center;
+    padding:25px 15px;
+    line-height:1.8;
+}
+
+.instagram{
+    color:#ff9f43;
+}
+
+/* MOBILE */
+
+@media(max-width:400px){
+
+    header h1{
+        font-size:27px;
+    }
+
+    .features{
+        gap:8px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<!-- HEADER -->
+
+<header>
+
+    <div class="logo-circle">
+        ☕
+    </div>
+
+    <h1>ITI Chai Wala</h1>
+
+    <div class="tagline">
+        THE TASTE OF TRADITION
+    </div>
+
+</header>
+
+
+<!-- BUSINESS INFO -->
+
+<div class="info">
+
+    <p>📍 <b>Location:</b>
+    In front of Baiswara Degree College, Gate No. 2</p>
+
+    <p>🕘 <b>Timing:</b>
+    9:00 AM – 10:00 PM</p>
+
+    <p>👨‍💼 <b>Owner:</b>
+    Satyam Trivedi</p>
+
+</div>
+
+
+<!-- TABLE -->
+
+<div class="table-box">
+
+    🪑 Your Table:
+    <span id="tableNumber">Loading...</span>
+
+</div>
+
+
+<!-- WELCOME -->
+
+<div class="welcome">
+
+    <h2>🍽️ Welcome!</h2>
+
+    <p>
+        Fresh food, delicious taste
+        and a traditional experience.
+    </p>
+
+</div>
+
+
+<!-- ORDER -->
+
+<button class="order-btn"
+onclick="startOrder()">
+
+    🍽️ Order Food
+
+</button>
+
+
+<!-- FEATURES -->
+
+<div class="features">
+
+    <div class="feature">
+
+        <div class="feature-icon">📱</div>
+
+        <b>Easy Ordering</b>
+
+        <small>
+            Order directly from your table
+        </small>
+
+    </div>
+
+
+    <div class="feature">
+
+        <div class="feature-icon">⚡</div>
+
+        <b>Quick Service</b>
+
+        <small>
+            Fast kitchen processing
+        </small>
+
+    </div>
+
+
+    <div class="feature">
+
+        <div class="feature-icon">🍔</div>
+
+        <b>Fresh Food</b>
+
+        <small>
+            Delicious food & drinks
+        </small>
+
+    </div>
+
+
+    <div class="feature">
+
+        <div class="feature-icon">⭐</div>
+
+        <b>Your Feedback</b>
+
+        <small>
+            Help us serve you better
+        </small>
+
+    </div>
+
+</div>
+
+
+<!-- GOOGLE REVIEW -->
+
+<div class="review">
+
+    <h2>⭐ Enjoyed Your Visit?</h2>
+
+    <p>
+        अपने experience को Google Maps पर share करें।
+    </p>
+
+    <button class="review-btn"
+    onclick="openGoogle()">
+
+        ⭐ Rate us on Google
+
+    </button>
+
+</div>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+    <b>☕ ITI Chai Wala</b>
+
+    <br>
+
+    📞 6394438667 | 7268088509
+
+    <br>
+
+    📸
+    <span class="instagram">
+        @ITI_.CHAI._WALA
+    </span>
+
+    <br><br>
+
+    © 2026 ITI Chai Wala
+
+</footer>
+
+
+<script>
+
+/* TABLE NUMBER */
+
+const params =
+new URLSearchParams(window.location.search);
+
+const table =
+params.get("table");
+
+if(table >= 1 && table <= 7){
+
+    document.getElementById("tableNumber")
+    .textContent = "Table " + table;
+
+}else{
+
+    document.getElementById("tableNumber")
+    .textContent = "Not Selected";
+
+}
+
+
+/* ORDER BUTTON */
+
+function startOrder(){
+
+    if(table >= 1 && table <= 7){
+
+        window.location.href =
+        "menu.html?table=" + table;
+
+    }else{
+
+        alert(
+            "Please open this website using your table QR code."
+        );
+
+    }
+
+}
+
+
+/* GOOGLE REVIEW */
+
+function openGoogle(){
+
+    window.open(
+        "https://maps.app.goo.gl/iBTyomxW4YEcfqaS9",
+        "_blank"
+    );
+
+}
+
+</script>
+
+
+</body>
+</html>
