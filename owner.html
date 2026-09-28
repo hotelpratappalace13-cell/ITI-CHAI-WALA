@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>ITI Chai Wala | Owner Dashboard</title>
+<title>ITI Chai Wala | Owner Panel</title>
 
 <style>
 *{
@@ -15,172 +15,182 @@
 }
 
 body{
-    background:#f4f6f8;
+    background:#f3f5f9;
     color:#222;
 }
 
-/* HEADER */
+/* TOP HEADER */
 
-.header{
-    background:linear-gradient(135deg,#4b2105,#8b4a0b);
+.top{
+    background:linear-gradient(135deg,#3b1600,#a65300);
     color:white;
-    padding:22px 18px;
+    padding:22px 16px;
 }
 
-.header-top{
-    max-width:1200px;
+.top-inner{
+    max-width:1250px;
     margin:auto;
+}
+
+.brand{
     display:flex;
     justify-content:space-between;
     align-items:center;
     gap:15px;
 }
 
-.logo-area h1{
-    font-size:27px;
+.brand h1{
+    font-size:28px;
 }
 
-.logo-area p{
+.brand p{
     margin-top:5px;
-    color:#f8dfbd;
-    font-size:14px;
+    color:#ffe1bd;
+    font-size:13px;
 }
 
-.owner-box{
-    background:rgba(255,255,255,.13);
-    border:1px solid rgba(255,255,255,.2);
-    border-radius:12px;
-    padding:12px 16px;
+.owner{
+    background:rgba(255,255,255,.15);
+    padding:13px 17px;
+    border-radius:14px;
     text-align:right;
 }
 
-.owner-box strong{
+.owner b{
     display:block;
-    font-size:16px;
+    font-size:17px;
 }
 
-.owner-box span{
+.owner span{
     display:block;
+    margin-top:5px;
     font-size:12px;
-    margin-top:4px;
-    color:#ffe9cc;
 }
 
-/* SHOP INFO */
-
-.shop-info{
-    max-width:1200px;
-    margin:15px auto 0;
+.shop{
     display:flex;
     flex-wrap:wrap;
     gap:10px;
+    margin-top:18px;
 }
 
-.info{
-    background:rgba(255,255,255,.12);
-    padding:9px 13px;
-    border-radius:8px;
-    font-size:13px;
+.shop span{
+    background:rgba(255,255,255,.13);
+    padding:9px 12px;
+    border-radius:9px;
+    font-size:12px;
 }
 
-/* CONTAINER */
+/* MAIN */
 
 .container{
     width:94%;
-    max-width:1200px;
+    max-width:1250px;
     margin:22px auto;
 }
 
-/* TITLE */
-
-.page-title{
+.heading{
     margin-bottom:15px;
 }
 
-.page-title h2{
-    color:#4b2105;
+.heading h2{
+    color:#381500;
     font-size:22px;
 }
 
-.page-title p{
+.heading p{
     color:#777;
     font-size:13px;
-    margin-top:4px;
+    margin-top:5px;
 }
 
-/* STATS */
+/* BIG STATS */
 
 .stats{
     display:grid;
     grid-template-columns:repeat(4,1fr);
-    gap:14px;
-    margin-bottom:22px;
+    gap:15px;
 }
 
-.card{
-    background:white;
-    padding:18px;
-    border-radius:14px;
-    box-shadow:0 3px 12px rgba(0,0,0,.07);
-    border-left:4px solid #8b4a0b;
+.stat{
+    min-height:145px;
+    padding:20px;
+    border-radius:18px;
+    color:white;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 5px 15px rgba(0,0,0,.10);
 }
 
-.card h3{
+.stat::after{
+    content:"";
+    position:absolute;
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    background:rgba(255,255,255,.12);
+    right:-25px;
+    top:-25px;
+}
+
+.stat-icon{
+    font-size:30px;
+}
+
+.stat-title{
+    margin-top:12px;
     font-size:13px;
-    color:#777;
-    font-weight:normal;
+    opacity:.9;
 }
 
-.card strong{
-    display:block;
-    margin-top:8px;
-    font-size:26px;
-    color:#4b2105;
+.stat-value{
+    font-size:30px;
+    font-weight:bold;
+    margin-top:5px;
 }
+
+.s1{background:linear-gradient(135deg,#ff7a18,#ff9f43)}
+.s2{background:linear-gradient(135deg,#6f42c1,#9b6de3)}
+.s3{background:linear-gradient(135deg,#00897b,#26a69a)}
+.s4{background:linear-gradient(135deg,#1976d2,#42a5f5)}
+.s5{background:linear-gradient(135deg,#e65100,#ff7043)}
+.s6{background:linear-gradient(135deg,#2e7d32,#66bb6a)}
+.s7{background:linear-gradient(135deg,#455a64,#78909c)}
+.s8{background:linear-gradient(135deg,#ad1457,#ec407a)}
 
 /* SECTION */
 
 .section{
     background:white;
+    margin-top:22px;
     padding:20px;
-    border-radius:15px;
-    margin-bottom:22px;
-    box-shadow:0 3px 12px rgba(0,0,0,.07);
+    border-radius:18px;
+    box-shadow:0 4px 15px rgba(0,0,0,.07);
 }
 
-.section-title{
+.section-head{
     display:flex;
     justify-content:space-between;
     align-items:center;
     gap:10px;
-    margin-bottom:16px;
+    margin-bottom:17px;
 }
 
-.section-title h2{
-    color:#4b2105;
-    font-size:19px;
+.section-head h2{
+    color:#421a04;
+    font-size:20px;
 }
 
-/* BUTTON */
-
-button{
+.refresh{
+    background:#421a04;
+    color:white;
+    padding:10px 14px;
     border:0;
-    border-radius:8px;
-    padding:9px 13px;
-    cursor:pointer;
+    border-radius:9px;
     font-weight:bold;
 }
 
-.refresh-btn{
-    background:#4b2105;
-    color:white;
-}
-
-.refresh-btn:hover{
-    background:#6b3106;
-}
-
-/* TABLE */
+/* ORDERS */
 
 .table-wrap{
     overflow-x:auto;
@@ -188,72 +198,75 @@ button{
 
 table{
     width:100%;
+    min-width:900px;
     border-collapse:collapse;
-    min-width:850px;
 }
 
 th{
-    background:#f7eee5;
-    color:#4b2105;
-    padding:12px 9px;
+    background:#fff1e3;
+    color:#572000;
+    padding:13px 10px;
     text-align:left;
     font-size:13px;
 }
 
 td{
-    padding:12px 9px;
+    padding:13px 10px;
     border-bottom:1px solid #eee;
     font-size:13px;
 }
 
 tr:hover td{
-    background:#fffaf5;
+    background:#fffaf6;
 }
-
-/* STATUS */
 
 .status{
     display:inline-block;
-    padding:6px 9px;
+    padding:6px 10px;
     border-radius:20px;
     font-size:11px;
     font-weight:bold;
 }
 
 .new{
-    background:#fff1c7;
-    color:#805d00;
+    background:#fff0b8;
+    color:#7a5a00;
 }
 
 .preparing{
-    background:#d9f1ff;
-    color:#075b82;
+    background:#d7efff;
+    color:#075b85;
 }
 
 .complete{
-    background:#d9f5df;
-    color:#17652a;
+    background:#d8f5dc;
+    color:#176528;
 }
 
 .delivered{
-    background:#e8e8e8;
+    background:#e6e6e6;
     color:#555;
 }
 
-/* ACTION */
-
-.action-btn{
-    background:#4b2105;
+.action{
+    background:#421a04;
     color:white;
-    margin-right:4px;
+    border:0;
+    padding:7px 9px;
+    border-radius:7px;
+    font-size:11px;
+    font-weight:bold;
 }
 
-.delete-btn{
+.delete{
     background:#dc3545;
     color:white;
+    border:0;
+    padding:7px 9px;
+    border-radius:7px;
+    font-size:11px;
+    font-weight:bold;
 }
-
-/* EMPTY */
 
 .empty{
     text-align:center;
@@ -261,11 +274,73 @@ tr:hover td{
     color:#888;
 }
 
+/* TABLE STATUS */
+
+.table-grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:12px;
+}
+
+.table-card{
+    padding:18px 10px;
+    border-radius:15px;
+    text-align:center;
+    background:#f4f6f8;
+    border:2px solid #e5e5e5;
+}
+
+.table-number{
+    font-size:22px;
+    font-weight:bold;
+    color:#421a04;
+}
+
+.table-status{
+    margin-top:8px;
+    font-size:11px;
+    font-weight:bold;
+    padding:6px;
+    border-radius:20px;
+    background:#d8f5dc;
+    color:#176528;
+}
+
+/* QUICK ACTIONS */
+
+.quick-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+}
+
+.quick{
+    padding:18px;
+    border-radius:14px;
+    background:#fafafa;
+    border:1px solid #eee;
+}
+
+.quick-icon{
+    font-size:28px;
+}
+
+.quick h3{
+    margin-top:8px;
+    color:#421a04;
+}
+
+.quick p{
+    margin-top:5px;
+    font-size:12px;
+    color:#777;
+}
+
 /* MENU */
 
 .menu-row{
     display:flex;
-    gap:9px;
+    gap:10px;
     margin-bottom:10px;
 }
 
@@ -273,11 +348,6 @@ tr:hover td{
     padding:11px;
     border:1px solid #ddd;
     border-radius:8px;
-    outline:none;
-}
-
-.menu-row input:focus{
-    border-color:#8b4a0b;
 }
 
 .menu-name{
@@ -288,22 +358,29 @@ tr:hover td{
     width:110px;
 }
 
-.add-btn{
-    background:#198754;
-    color:white;
-}
-
-.save-btn{
-    background:#4b2105;
-    color:white;
-}
-
-.remove-btn{
+.remove{
     background:#dc3545;
     color:white;
+    border:0;
+    border-radius:8px;
+    padding:9px 12px;
+}
+
+.save{
+    background:#421a04;
+    color:white;
+    border:0;
+    border-radius:8px;
+    padding:10px 15px;
+    font-weight:bold;
 }
 
 /* SETTINGS */
+
+.settings{
+    background:#fff8f2;
+    border:1px solid #f0dcc8;
+}
 
 .settings-grid{
     display:grid;
@@ -311,72 +388,75 @@ tr:hover td{
     gap:12px;
 }
 
-.settings-grid input{
+.settings input{
+    width:100%;
     padding:12px;
     border:1px solid #ddd;
-    border-radius:8px;
-    outline:none;
+    border-radius:9px;
 }
-
-.settings-grid input:focus{
-    border-color:#8b4a0b;
-}
-
-/* FOOTER */
 
 .footer{
     text-align:center;
     color:#777;
-    padding:10px 10px 25px;
     font-size:12px;
+    padding:15px 10px 30px;
 }
 
 /* MOBILE */
 
-@media(max-width:800px){
+@media(max-width:900px){
 
-    .header-top{
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .table-grid{
+        grid-template-columns:repeat(4,1fr);
+    }
+
+}
+
+@media(max-width:600px){
+
+    .brand{
         flex-direction:column;
         align-items:flex-start;
     }
 
-    .owner-box{
+    .owner{
         width:100%;
         text-align:left;
     }
 
     .stats{
         grid-template-columns:repeat(2,1fr);
+        gap:10px;
     }
 
-}
-
-@media(max-width:520px){
-
-    .logo-area h1{
-        font-size:23px;
+    .stat{
+        min-height:125px;
+        padding:15px;
     }
 
-    .stats{
-        grid-template-columns:1fr 1fr;
-        gap:9px;
-    }
-
-    .card{
-        padding:14px;
-    }
-
-    .card strong{
-        font-size:21px;
+    .stat-value{
+        font-size:24px;
     }
 
     .section{
         padding:14px;
     }
 
-    .section-title{
-        align-items:flex-start;
+    .section-head{
         flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .table-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .quick-grid{
+        grid-template-columns:1fr;
     }
 
     .settings-grid{
@@ -396,6 +476,7 @@ tr:hover td{
         flex:1;
         width:auto;
     }
+
 }
 </style>
 </head>
@@ -404,219 +485,259 @@ tr:hover td{
 
 <!-- HEADER -->
 
-<header class="header">
+<div class="top">
 
-    <div class="header-top">
+<div class="top-inner">
 
-        <div class="logo-area">
-            <h1>☕ ITI CHAI WALA</h1>
-            <p>Owner Management Dashboard</p>
-        </div>
+<div class="brand">
 
-        <div class="owner-box">
-            <strong>👤 Satyam Trivedi</strong>
-            <span>📞 6394438667</span>
-        </div>
+<div>
+<h1>☕ ITI CHAI WALA</h1>
+<p>Professional Owner Dashboard</p>
+</div>
 
-    </div>
+<div class="owner">
+<b>👤 Satyam Trivedi</b>
+<span>📞 6394438667</span>
+</div>
 
-    <div class="shop-info">
+</div>
 
-        <div class="info">
-            🏪 ITI Chai Wala
-        </div>
+<div class="shop">
 
-        <div class="info">
-            📍 In front of Baiswara Degree College, Gate No. 2
-        </div>
+<span>🏪 ITI Chai Wala</span>
 
-        <div class="info">
-            🟢 Online System Active
-        </div>
+<span>
+📍 In front of Baiswara Degree College, Gate No. 2
+</span>
 
-    </div>
+<span>🟢 System Online</span>
 
-</header>
+</div>
 
-
-<div class="container">
-
-    <div class="page-title">
-        <h2>📊 Dashboard Overview</h2>
-        <p>Orders aur business ka complete overview</p>
-    </div>
-
-
-    <!-- STATS -->
-
-    <div class="stats">
-
-        <div class="card">
-            <h3>📦 Total Orders</h3>
-            <strong id="totalOrders">0</strong>
-        </div>
-
-        <div class="card">
-            <h3>💰 Total Sales</h3>
-            <strong id="totalSales">₹0</strong>
-        </div>
-
-        <div class="card">
-            <h3>🍽️ Items Sold</h3>
-            <strong id="itemsSold">0</strong>
-        </div>
-
-        <div class="card">
-            <h3>🆕 New Orders</h3>
-            <strong id="newOrders">0</strong>
-        </div>
-
-        <div class="card">
-            <h3>👨‍🍳 Preparing</h3>
-            <strong id="preparingOrders">0</strong>
-        </div>
-
-        <div class="card">
-            <h3>✅ Complete</h3>
-            <strong id="completeOrders">0</strong>
-        </div>
-
-        <div class="card">
-            <h3>🚚 Delivered</h3>
-            <strong id="deliveredOrders">0</strong>
-        </div>
-
-        <div class="card">
-            <h3>📅 Today's Sales</h3>
-            <strong id="todaySales">₹0</strong>
-        </div>
-
-    </div>
-
-
-    <!-- ORDERS -->
-
-    <div class="section">
-
-        <div class="section-title">
-
-            <h2>📦 Recent Orders</h2>
-
-            <button
-                class="refresh-btn"
-                onclick="loadOrders()">
-                🔄 Refresh
-            </button>
-
-        </div>
-
-        <div class="table-wrap">
-
-            <table>
-
-                <thead>
-
-                    <tr>
-                        <th>Order ID</th>
-                        <th>Table</th>
-                        <th>Food Item</th>
-                        <th>Qty</th>
-                        <th>Total</th>
-                        <th>Time</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-
-                </thead>
-
-                <tbody id="ordersBody">
-
-                    <tr>
-                        <td colspan="8" class="empty">
-                            Orders loading...
-                        </td>
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </div>
-
-
-    <!-- MANAGE MENU -->
-
-    <div class="section">
-
-        <div class="section-title">
-
-            <h2>🍽️ Manage Menu</h2>
-
-        </div>
-
-        <div id="menuRows"></div>
-
-        <button
-            class="add-btn"
-            onclick="addMenuRow()">
-            + Add Item
-        </button>
-
-        <button
-            class="save-btn"
-            onclick="saveMenu()">
-            💾 Save Menu
-        </button>
-
-    </div>
-
-
-    <!-- SETTINGS -->
-
-    <div class="section">
-
-        <div class="section-title">
-
-            <h2>⚙️ Shop Settings</h2>
-
-        </div>
-
-        <div class="settings-grid">
-
-            <input
-                type="text"
-                id="shopName"
-                placeholder="Shop Name">
-
-            <input
-                type="text"
-                id="shopAddress"
-                placeholder="Shop Address">
-
-        </div>
-
-        <br>
-
-        <button
-            class="save-btn"
-            onclick="saveSettings()">
-            💾 Save Settings
-        </button>
-
-    </div>
+</div>
 
 </div>
 
 
-<footer class="footer">
+<div class="container">
 
-    ITI Chai Wala © 2026 |
-    Owner: Satyam Trivedi |
-    📞 6394438667
+<div class="heading">
+<h2>📊 Business Overview</h2>
+<p>Aapke restaurant ka complete live overview</p>
+</div>
 
-</footer>
+
+<!-- STATS -->
+
+<div class="stats">
+
+<div class="stat s1">
+<div class="stat-icon">📦</div>
+<div class="stat-title">TOTAL ORDERS</div>
+<div class="stat-value" id="totalOrders">0</div>
+</div>
+
+<div class="stat s2">
+<div class="stat-icon">💰</div>
+<div class="stat-title">TOTAL SALES</div>
+<div class="stat-value" id="totalSales">₹0</div>
+</div>
+
+<div class="stat s3">
+<div class="stat-icon">🍽️</div>
+<div class="stat-title">ITEMS SOLD</div>
+<div class="stat-value" id="itemsSold">0</div>
+</div>
+
+<div class="stat s4">
+<div class="stat-icon">🆕</div>
+<div class="stat-title">NEW ORDERS</div>
+<div class="stat-value" id="newOrders">0</div>
+</div>
+
+<div class="stat s5">
+<div class="stat-icon">👨‍🍳</div>
+<div class="stat-title">PREPARING</div>
+<div class="stat-value" id="preparingOrders">0</div>
+</div>
+
+<div class="stat s6">
+<div class="stat-icon">✅</div>
+<div class="stat-title">COMPLETE</div>
+<div class="stat-value" id="completeOrders">0</div>
+</div>
+
+<div class="stat s7">
+<div class="stat-icon">🚚</div>
+<div class="stat-title">DELIVERED</div>
+<div class="stat-value" id="deliveredOrders">0</div>
+</div>
+
+<div class="stat s8">
+<div class="stat-icon">📅</div>
+<div class="stat-title">TODAY'S SALES</div>
+<div class="stat-value" id="todaySales">₹0</div>
+</div>
+
+</div>
+
+
+<!-- ORDERS -->
+
+<div class="section">
+
+<div class="section-head">
+
+<h2>📦 Live Orders</h2>
+
+<button class="refresh" onclick="loadOrders()">
+🔄 Refresh
+</button>
+
+</div>
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Order ID</th>
+<th>Table</th>
+<th>Food</th>
+<th>Qty</th>
+<th>Total</th>
+<th>Time</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+
+</thead>
+
+<tbody id="ordersBody">
+
+<tr>
+<td colspan="8" class="empty">
+Orders loading...
+</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+<!-- TABLE STATUS -->
+
+<div class="section">
+
+<div class="section-head">
+<h2>🪑 Table Status</h2>
+</div>
+
+<div class="table-grid" id="tableGrid">
+
+</div>
+
+</div>
+
+
+<!-- QUICK ACTIONS -->
+
+<div class="section">
+
+<div class="section-head">
+<h2>⚡ Quick Information</h2>
+</div>
+
+<div class="quick-grid">
+
+<div class="quick">
+<div class="quick-icon">📱</div>
+<h3>QR Ordering</h3>
+<p>Customer QR scan karke direct order kar sakta hai.</p>
+</div>
+
+<div class="quick">
+<div class="quick-icon">📊</div>
+<h3>Live Orders</h3>
+<p>Orders Google Sheet se automatically update hote hain.</p>
+</div>
+
+<div class="quick">
+<div class="quick-icon">🔄</div>
+<h3>Auto Refresh</h3>
+<p>Dashboard har 10 seconds me orders check karta hai.</p>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- MANAGE MENU -->
+
+<div class="section">
+
+<div class="section-head">
+<h2>🍽️ Manage Menu</h2>
+</div>
+
+<div id="menuRows"></div>
+
+<button class="save" onclick="saveMenu()">
+💾 Save Menu
+</button>
+
+</div>
+
+
+<!-- SETTINGS AT BOTTOM -->
+
+<div class="section settings">
+
+<div class="section-head">
+<h2>⚙️ Settings</h2>
+</div>
+
+<div class="settings-grid">
+
+<input
+type="text"
+id="shopName"
+placeholder="Shop Name">
+
+<input
+type="text"
+id="shopAddress"
+placeholder="Shop Address">
+
+</div>
+
+<br>
+
+<button class="save" onclick="saveSettings()">
+💾 Save Settings
+</button>
+
+</div>
+
+</div>
+
+
+<div class="footer">
+
+ITI Chai Wala © 2026 |
+Owner: Satyam Trivedi |
+📞 6394438667
+
+</div>
 
 
 <script>
@@ -624,630 +745,833 @@ tr:hover td{
 const API_URL =
 "https://script.google.com/macros/s/AKfycbx7PWk-_E0MU2bn5VsLMVHGMGbZFVjRaSYCXJXn50ay2_kodfrKc43EddUNc7EujMJb8g/exec";
 
-let allOrders = [];
+let allOrders=[];
 
 
-/* =========================
-   LOAD ORDERS
-========================= */
+/* LOAD ORDERS */
 
 async function loadOrders(){
 
-    const body =
-    document.getElementById("ordersBody");
+const body=document.getElementById("ordersBody");
 
-    body.innerHTML = `
-        <tr>
-            <td colspan="8" class="empty">
-                Orders loading...
-            </td>
-        </tr>
-    `;
+body.innerHTML=`
+<tr>
+<td colspan="8" class="empty">
+Orders loading...
+</td>
+</tr>`;
 
-    try{
 
-        const response =
-        await fetch(API_URL);
+try{
 
-        const data =
-        await response.json();
+const response=await fetch(API_URL);
 
-        if(!Array.isArray(data)){
+const data=await response.json();
 
-            body.innerHTML = `
-                <tr>
-                    <td colspan="8" class="empty">
-                        No order data found
-                    </td>
-                </tr>
-            `;
+allOrders=[];
 
-            return;
-        }
+if(!Array.isArray(data)) return;
 
-        allOrders = [];
 
-        for(let i=1;i<data.length;i++){
+for(let i=1;i<data.length;i++){
 
-            const row = data[i];
+const row=data[i];
 
-            if(!row || row.length < 8)
-                continue;
+if(!row || row.length<8) continue;
 
-            allOrders.push({
+allOrders.push({
 
-                time: row[0],
+time:row[0],
+table:row[1],
+item:row[2],
+quantity:Number(row[3])||0,
+price:Number(row[4])||0,
+total:Number(row[5])||0,
+status:String(row[6]||"New"),
+orderId:String(row[7]||"")
 
-                table: row[1],
-
-                item: row[2],
-
-                quantity:
-                    Number(row[3]) || 0,
-
-                price:
-                    Number(row[4]) || 0,
-
-                total:
-                    Number(row[5]) || 0,
-
-                status:
-                    String(row[6] || "New"),
-
-                orderId:
-                    String(row[7] || "")
-
-            });
-
-        }
-
-        updateStats();
-
-        displayOrders();
-
-    }
-    catch(error){
-
-        console.error(error);
-
-        body.innerHTML = `
-            <tr>
-                <td colspan="8" class="empty">
-                    ❌ Orders load nahi ho rahe
-                </td>
-            </tr>
-        `;
-
-    }
+});
 
 }
 
 
-/* =========================
-   DISPLAY ORDERS
-========================= */
+updateStats();
+
+displayOrders();
+
+updateTables();
+
+}
+
+catch(error){
+
+console.log(error);
+
+body.innerHTML=`
+<tr>
+<td colspan="8" class="empty">
+❌ Orders load nahi ho rahe
+</td>
+</tr>`;
+
+}
+
+}
+
+
+/* DISPLAY ORDERS */
 
 function displayOrders(){
 
-    const body =
-    document.getElementById("ordersBody");
+const body=document.getElementById("ordersBody");
 
-    body.innerHTML = "";
+body.innerHTML="";
 
-    const activeOrders =
-    allOrders.filter(order =>
-        order.status.toLowerCase() !== "delivered"
-    );
 
-    if(activeOrders.length === 0){
+const active=
+allOrders.filter(o=>
+o.status.toLowerCase()!=="delivered"
+);
 
-        body.innerHTML = `
-            <tr>
-                <td colspan="8" class="empty">
-                    📭 Koi active order nahi hai
-                </td>
-            </tr>
-        `;
 
-        return;
-    }
+if(active.length===0){
 
-    activeOrders.reverse().forEach(order => {
+body.innerHTML=`
+<tr>
+<td colspan="8" class="empty">
+📭 Koi active order nahi hai
+</td>
+</tr>`;
 
-        const tr =
-        document.createElement("tr");
-
-        tr.innerHTML = `
-
-            <td>
-                <b>${escapeHTML(order.orderId)}</b>
-            </td>
-
-            <td>
-                Table ${escapeHTML(order.table)}
-            </td>
-
-            <td>
-                ${escapeHTML(order.item)}
-            </td>
-
-            <td>
-                ${order.quantity}
-            </td>
-
-            <td>
-                ₹${order.total}
-            </td>
-
-            <td>
-                ${escapeHTML(order.time)}
-            </td>
-
-            <td>
-                ${statusHTML(order.status)}
-            </td>
-
-            <td>
-
-                <button
-                    class="action-btn"
-                    onclick="changeStatus('${encodeURIComponent(order.orderId)}')">
-                    Status
-                </button>
-
-                <button
-                    class="delete-btn"
-                    onclick="deleteOrder('${encodeURIComponent(order.orderId)}')">
-                    Delete
-                </button>
-
-            </td>
-        `;
-
-        body.appendChild(tr);
-
-    });
+return;
 
 }
 
 
-/* =========================
-   STATUS
-========================= */
+active.reverse().forEach(order=>{
+
+const tr=document.createElement("tr");
+
+
+tr.innerHTML=`
+
+<td>
+<b>${escapeHTML(order.orderId)}</b>
+</td>
+
+<td>
+Table ${escapeHTML(order.table)}
+</td>
+
+<td>
+${escapeHTML(order.item)}
+</td>
+
+<td>
+${order.quantity}
+</td>
+
+<td>
+₹${order.total}
+</td>
+
+<td>
+${escapeHTML(order.time)}
+</td>
+
+<td>
+${statusHTML(order.status)}
+</td>
+
+<td>
+
+<button
+class="action"
+onclick="changeStatus('${encodeURIComponent(order.orderId)}')">
+Status
+</button>
+
+<button
+class="delete"
+onclick="deleteOrder('${encodeURIComponent(order.orderId)}')">
+Delete
+</button>
+
+</td>
+
+`;
+
+body.appendChild(tr);
+
+});
+
+}
+
+
+/* STATUS */
 
 function statusHTML(status){
 
-    const s =
-    String(status).toLowerCase();
+const s=String(status).toLowerCase();
 
-    let cls = "new";
+let cls="new";
 
-    if(s === "preparing")
-        cls = "preparing";
+if(s==="preparing") cls="preparing";
 
-    if(s === "complete")
-        cls = "complete";
+if(s==="complete") cls="complete";
 
-    if(s === "delivered")
-        cls = "delivered";
+if(s==="delivered") cls="delivered";
 
-    return `
-        <span class="status ${cls}">
-            ${escapeHTML(status)}
-        </span>
-    `;
-}
-
-
-/* =========================
-   CHANGE STATUS
-========================= */
-
-async function changeStatus(encodedId){
-
-    const orderId =
-    decodeURIComponent(encodedId);
-
-    const newStatus =
-    prompt(
-        "Status likho:\n\nNew\nPreparing\nComplete\nDelivered"
-    );
-
-    if(!newStatus)
-        return;
-
-    const valid = [
-        "New",
-        "Preparing",
-        "Complete",
-        "Delivered"
-    ];
-
-    const matched =
-    valid.find(
-        x =>
-        x.toLowerCase() ===
-        newStatus.toLowerCase()
-    );
-
-    if(!matched){
-
-        alert(
-            "Sirf New, Preparing, Complete ya Delivered likho."
-        );
-
-        return;
-    }
-
-    try{
-
-        await fetch(API_URL,{
-
-            method:"POST",
-
-            body:JSON.stringify({
-
-                action:"updateStatus",
-
-                orderId:orderId,
-
-                status:matched
-
-            })
-
-        });
-
-        alert("Status update ho gaya ✅");
-
-        loadOrders();
-
-    }
-    catch(error){
-
-        alert("Status update nahi hua.");
-
-        console.error(error);
-
-    }
+return`
+<span class="status ${cls}">
+${escapeHTML(status)}
+</span>`;
 
 }
 
 
-/* =========================
-   DELETE ORDER
-========================= */
+/* CHANGE STATUS */
 
-async function deleteOrder(encodedId){
+async function changeStatus(encoded){
 
-    const orderId =
-    decodeURIComponent(encodedId);
+const orderId=decodeURIComponent(encoded);
 
-    if(
-        !confirm(
-            "Kya aap is order ko delete karna chahte ho?"
-        )
-    )
-        return;
+const status=prompt(
+"Status likho:\n\nNew\nPreparing\nComplete\nDelivered"
+);
 
-    try{
+if(!status) return;
 
-        await fetch(API_URL,{
+const valid=[
+"New",
+"Preparing",
+"Complete",
+"Delivered"
+];
 
-            method:"POST",
+const found=valid.find(
+x=>x.toLowerCase()===status.toLowerCase()
+);
 
-            body:JSON.stringify({
+if(!found){
 
-                action:"deleteOrder",
+alert("Sirf New, Preparing, Complete ya Delivered likho.");
 
-                orderId:orderId
-
-            })
-
-        });
-
-        alert("Order delete ho gaya ✅");
-
-        loadOrders();
-
-    }
-    catch(error){
-
-        alert("Order delete nahi hua.");
-
-    }
+return;
 
 }
 
 
-/* =========================
-   STATS
-========================= */
+try{
+
+await fetch(API_URL,{
+
+method:"POST",
+
+body:JSON.stringify({
+
+action:"updateStatus",
+orderId:orderId,
+status:found
+
+})
+
+});
+
+
+alert("Status update ho gaya ✅");
+
+loadOrders();
+
+}
+
+catch(error){
+
+alert("Status update nahi hua.");
+
+}
+
+}
+
+
+/* DELETE */
+
+async function deleteOrder(encoded){
+
+const orderId=decodeURIComponent(encoded);
+
+if(!confirm("Kya aap is order ko delete karna chahte ho?"))
+return;
+
+
+try{
+
+await fetch(API_URL,{
+
+method:"POST",
+
+body:JSON.stringify({
+
+action:"deleteOrder",
+orderId:orderId
+
+})
+
+});
+
+
+alert("Order delete ho gaya ✅");
+
+loadOrders();
+
+}
+
+catch(error){
+
+alert("Order delete nahi hua.");
+
+}
+
+}
+
+
+/* STATS */
 
 function updateStats(){
 
-    let totalSales = 0;
+let sales=0;
+let items=0;
+let newCount=0;
+let preparing=0;
+let complete=0;
+let delivered=0;
+let today=0;
 
-    let itemsSold = 0;
-
-    let newCount = 0;
-
-    let preparingCount = 0;
-
-    let completeCount = 0;
-
-    let deliveredCount = 0;
-
-    let todaySales = 0;
-
-    const orderIds = new Set();
+const ids=new Set();
 
 
-    allOrders.forEach(order => {
+allOrders.forEach(o=>{
 
-        totalSales += order.total;
+sales+=o.total;
 
-        itemsSold += order.quantity;
+items+=o.quantity;
 
-        if(order.orderId)
-            orderIds.add(order.orderId);
-
-        const status =
-        order.status.toLowerCase();
-
-        if(status === "new")
-            newCount++;
-
-        if(status === "preparing")
-            preparingCount++;
-
-        if(status === "complete")
-            completeCount++;
-
-        if(status === "delivered")
-            deliveredCount++;
+if(o.orderId)
+ids.add(o.orderId);
 
 
-        const date =
-        parseDate(order.time);
+const s=o.status.toLowerCase();
 
-        if(date){
+if(s==="new") newCount++;
 
-            const now =
-            new Date();
+if(s==="preparing") preparing++;
 
-            if(
-                date.getDate() ===
-                now.getDate() &&
+if(s==="complete") complete++;
 
-                date.getMonth() ===
-                now.getMonth() &&
-
-                date.getFullYear() ===
-                now.getFullYear()
-            ){
-
-                todaySales += order.total;
-
-            }
-
-        }
-
-    });
+if(s==="delivered") delivered++;
 
 
-    document.getElementById("totalOrders")
-        .textContent = orderIds.size;
+const d=parseDate(o.time);
 
-    document.getElementById("totalSales")
-        .textContent = "₹" + totalSales;
+if(d){
 
-    document.getElementById("itemsSold")
-        .textContent = itemsSold;
+const now=new Date();
 
-    document.getElementById("newOrders")
-        .textContent = newCount;
+if(
+d.getDate()===now.getDate() &&
+d.getMonth()===now.getMonth() &&
+d.getFullYear()===now.getFullYear()
+){
 
-    document.getElementById("preparingOrders")
-        .textContent = preparingCount;
+today+=o.total;
 
-    document.getElementById("completeOrders")
-        .textContent = completeCount;
+}
 
-    document.getElementById("deliveredOrders")
-        .textContent = deliveredCount;
+}
 
-    document.getElementById("todaySales")
-        .textContent = "₹" + todaySales;
+});
+
+
+document.getElementById("totalOrders").textContent=ids.size;
+
+document.getElementById("totalSales").textContent="₹"+sales;
+
+document.getElementById("itemsSold").textContent=items;
+
+document.getElementById("newOrders").textContent=newCount;
+
+document.getElementById("preparingOrders").textContent=preparing;
+
+document.getElementById("completeOrders").textContent=complete;
+
+document.getElementById("deliveredOrders").textContent=delivered;
+
+document.getElementById("todaySales").textContent="₹"+today;
 
 }
 
 
-/* =========================
-   DATE
-========================= */
+/* DATE */
 
 function parseDate(value){
 
-    if(!value)
-        return null;
+if(!value) return null;
 
-    const str =
-    String(value).trim();
+const str=String(value).trim();
 
-    const match =
-    str.match(
-        /^(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2}):(\d{2})$/
-    );
+const m=str.match(
+/^(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2}):(\d{2})$/
+);
 
-    if(match){
+if(m){
 
-        return new Date(
+return new Date(
+Number(m[3]),
+Number(m[2])-1,
+Number(m[1]),
+Number(m[4]),
+Number(m[5]),
+Number(m[6])
+);
 
-            Number(match[3]),
+}
 
-            Number(match[2]) - 1,
+const d=new Date(str);
 
-            Number(match[1]),
-
-            Number(match[4]),
-
-            Number(match[5]),
-
-            Number(match[6])
-
-        );
-
-    }
-
-    const d =
-    new Date(str);
-
-    if(!isNaN(d.getTime()))
-        return d;
-
-    return null;
+return isNaN(d.getTime())?null:d;
 
 }
 
 
-/* =========================
-   MENU
-========================= */
+/* TABLE STATUS */
+
+function updateTables(){
+
+const grid=document.getElementById("tableGrid");
+
+grid.innerHTML="";
+
+
+for(let t=1;t<=7;t++){
+
+const tableOrders=
+allOrders.filter(o=>
+String(o.table)===String(t) &&
+o.status.toLowerCase()!=="delivered"
+);
+
+
+let status="FREE";
+
+let color="";
+
+if(tableOrders.length>0){
+
+const preparing=
+tableOrders.some(o=>
+o.status.toLowerCase()==="preparing"
+);
+
+const complete=
+tableOrders.some(o=>
+o.status.toLowerCase()==="complete"
+);
+
+if(preparing){
+status="PREPARING";
+}
+
+else if(complete){
+status="COMPLETE";
+}
+
+else{
+status="NEW ORDER";
+}
+
+}
+
+
+const card=document.createElement("div");
+
+card.className="table-card";
+
+card.innerHTML=`
+
+<div class="table-number">
+TABLE ${t}
+</div>
+
+<div class="table-status">
+${status}
+</div>
+
+`;
+
+grid.appendChild(card);
+
+}
+
+}
+
+
+/* MENU */
 
 async function loadMenu(){
 
-    try{
+try{
 
-        const response =
-        await fetch(
-            API_URL + "?action=menu"
-        );
+const response=
+await fetch(API_URL+"?action=menu");
 
-        const data =
-        await response.json();
+const data=await response.json();
 
-        const rows =
-        document.getElementById("menuRows");
+const rows=
+document.getElementById("menuRows");
 
-        rows.innerHTML = "";
+rows.innerHTML="";
 
-        if(
-            Array.isArray(data) &&
-            data.length > 1
-        ){
 
-            for(
-                let i=1;
-                i<data.length;
-                i++
-            ){
+if(Array.isArray(data)&&data.length>1){
 
-                if(!data[i])
-                    continue;
+for(let i=1;i<data.length;i++){
 
-                addMenuRow(
-                    data[i][0] || "",
-                    data[i][1] || ""
-                );
+if(!data[i]) continue;
 
-            }
+addMenuRow(
+data[i][0]||"",
+data[i][1]||""
+);
 
-        }
-
-        if(rows.children.length === 0){
-
-            addMenuRow("Chai","20");
-
-            addMenuRow(
-                "Water Bottle",
-                "10"
-            );
-
-        }
-
-    }
-    catch(error){
-
-        console.log(
-            "Menu load error",
-            error
-        );
-
-        const rows =
-        document.getElementById("menuRows");
-
-        if(rows.children.length === 0){
-
-            addMenuRow("Chai","20");
-
-        }
-
-    }
+}
 
 }
 
 
-function addMenuRow(
-    name="",
-    price=""
-){
+if(rows.children.length===0){
 
-    const container =
-    document.getElementById("menuRows");
+addMenuRow("Chai","20");
 
-    const row =
-    document.createElement("div");
-
-    row.className =
-    "menu-row";
-
-    row.innerHTML = `
-
-        <input
-            class="menu-name"
-            type="text"
-            placeholder="Food Item"
-            value="${escapeAttribute(name)}">
-
-        <input
-            class="menu-price"
-            type="number"
-            placeholder="₹ Price"
-            value="${escapeAttribute(price)}">
-
-        <button
-            class="remove-btn"
-            onclick="this.parentElement.remove()">
-            Remove
-        </button>
-
-    `;
-
-    container.appendChild(row);
+addMenuRow("Water Bottle","10");
 
 }
 
+}
+
+catch(error){
+
+console.log(error);
+
+}
+
+}
+
+
+/* MENU ROW */
+
+function addMenuRow(name="",price=""){
+
+const container=
+document.getElementById("menuRows");
+
+const row=
+document.createElement("div");
+
+row.className="menu-row";
+
+
+row.innerHTML=`
+
+<input
+class="menu-name"
+type="text"
+placeholder="Food Item"
+value="${escapeAttribute(name)}">
+
+<input
+class="menu-price"
+type="number"
+placeholder="₹ Price"
+value="${escapeAttribute(price)}">
+
+<button
+class="remove"
+onclick="this.parentElement.remove()">
+Remove
+</button>
+
+`;
+
+
+container.appendChild(row);
+
+}
+
+
+/* SAVE MENU */
 
 async function saveMenu(){
 
-    const rows = [
-        ...document.querySelectorAll(
-            "#menuRows .menu-row"
-        )
-    ];
+const rows=[
+...document.querySelectorAll(
+"#menuRows .menu-row"
+)
+];
 
-    const menu = [];
+const menu=[];
 
-    rows.forEach(row => {
 
-        const name =
-        row.querySelector(
-            ".menu-name"
-        ).value.trim();
+rows.forEach(row=>{
 
-        const price =
-        row.querySelector(
-            ".menu-price"
-        ).value.trim();
+const name=
+row.querySelector(".menu-name")
+.value.trim();
 
-        if(name && price
+const price=
+row.querySelector(".menu-price")
+.value.trim();
+
+
+if(name&&price){
+
+menu.push({
+
+name:name,
+price:Number(price)
+
+});
+
+}
+
+});
+
+
+if(menu.length===0){
+
+alert("Menu me item nahi hai.");
+
+return;
+
+}
+
+
+try{
+
+const response=
+await fetch(API_URL,{
+
+method:"POST",
+
+body:JSON.stringify({
+
+action:"saveMenu",
+menu:menu
+
+})
+
+});
+
+
+const result=
+await response.json();
+
+
+if(result.success){
+
+alert("Menu save ho gaya ✅");
+
+}
+
+else{
+
+alert("Menu save nahi hua.");
+
+}
+
+}
+
+catch(error){
+
+alert("Menu save karte waqt error aaya.");
+
+}
+
+}
+
+
+/* SETTINGS */
+
+async function loadSettings(){
+
+try{
+
+const response=
+await fetch(
+API_URL+"?action=settings"
+);
+
+const data=
+await response.json();
+
+
+if(Array.isArray(data)&&data.length>1){
+
+const settings={};
+
+
+for(let i=1;i<data.length;i++){
+
+if(data[i][0]){
+
+settings[
+String(data[i][0])
+]=data[i][1];
+
+}
+
+}
+
+
+if(settings.shopName){
+
+document.getElementById(
+"shopName"
+).value=settings.shopName;
+
+}
+
+
+if(settings.shopAddress){
+
+document.getElementById(
+"shopAddress"
+).value=settings.shopAddress;
+
+}
+
+}
+
+}
+
+catch(error){
+
+console.log(error);
+
+}
+
+}
+
+
+/* SAVE SETTINGS */
+
+async function saveSettings(){
+
+const shopName=
+document.getElementById(
+"shopName"
+).value.trim();
+
+
+const shopAddress=
+document.getElementById(
+"shopAddress"
+).value.trim();
+
+
+try{
+
+const response=
+await fetch(API_URL,{
+
+method:"POST",
+
+body:JSON.stringify({
+
+action:"saveSettings",
+
+settings:{
+
+shopName:shopName,
+shopAddress:shopAddress
+
+}
+
+})
+
+});
+
+
+const result=
+await response.json();
+
+
+if(result.success){
+
+alert(
+"Settings save ho gayi ✅"
+);
+
+}
+
+else{
+
+alert(
+"Settings save nahi hui."
+);
+
+}
+
+}
+
+catch(error){
+
+alert(
+"Settings save karte waqt error aaya."
+);
+
+}
+
+}
+
+
+/* SECURITY */
+
+function escapeHTML(value){
+
+return String(value)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+
+function escapeAttribute(value){
+
+return escapeHTML(value);
+
+}
+
+
+/* START */
+
+loadOrders();
+
+loadMenu();
+
+loadSettings();
+
+
+/* AUTO REFRESH */
+
+setInterval(
+loadOrders,
+10000
+);
+
+</script>
+
+</body>
+    </html>
