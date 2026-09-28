@@ -7,6 +7,7 @@
 <title>ITI Chai Wala - Kitchen</title>
 
 <style>
+
 *{
     box-sizing:border-box;
     margin:0;
@@ -162,6 +163,50 @@ header p{
     color:#777;
 }
 
+/* NEW ORDER NOTIFICATION */
+
+.notification-box{
+    display:none;
+    position:fixed;
+    top:15px;
+    left:50%;
+    transform:translateX(-50%);
+    width:92%;
+    max-width:420px;
+    background:#fff;
+    border:3px solid #e67e22;
+    border-radius:15px;
+    padding:15px;
+    z-index:9999;
+    box-shadow:0 5px 25px rgba(0,0,0,.3);
+}
+
+.notification-box.show{
+    display:block;
+}
+
+.notification-title{
+    font-size:18px;
+    font-weight:bold;
+    color:#c45d00;
+}
+
+.notification-text{
+    margin-top:6px;
+    font-size:14px;
+    color:#444;
+}
+
+.notification-close{
+    margin-top:10px;
+    border:none;
+    background:#e67e22;
+    color:white;
+    padding:8px 12px;
+    border-radius:7px;
+    font-weight:bold;
+}
+
 @media(max-width:500px){
 
     .order-head{
@@ -172,7 +217,9 @@ header p{
         flex:1;
         min-width:120px;
     }
+
 }
+
 </style>
 </head>
 
@@ -183,25 +230,55 @@ header p{
     <p>Kitchen Order Panel</p>
 </header>
 
+
+<!-- NEW ORDER NOTIFICATION -->
+
+<div id="notificationBox" class="notification-box">
+
+    <div class="notification-title">
+        🔔 NEW ORDER!
+    </div>
+
+    <div id="notificationText" class="notification-text">
+        New order received.
+    </div>
+
+    <button
+        class="notification-close"
+        onclick="closeNotification()">
+        OK
+    </button>
+
+</div>
+
+
 <div class="container">
 
     <div class="topbar">
+
         <div class="count" id="orderCount">
             Orders: 0
         </div>
 
-        <button class="refresh" onclick="loadOrders()">
+        <button
+            class="refresh"
+            onclick="loadOrders()">
             🔄 Refresh
         </button>
+
     </div>
 
+
     <div id="orders">
+
         <div class="empty">
             Loading orders...
         </div>
+
     </div>
 
 </div>
+
 
 <script>
 
@@ -211,126 +288,428 @@ const BACKEND_URL =
 
 let allOrders = [];
 
+let previousOrderIds = [];
 
-async function loadOrders(){
+let firstLoad = true;
 
-    const box = document.getElementById("orders");
+
+/* NOTIFICATION PERMISSION */
+
+if("Notification" in window){
+
+    Notification.requestPermission();
+
+}
+
+
+/* SOUND */
+
+function playNotificationSound(){
 
     try{
 
-        const response = await fetch(BACKEND_URL);
+        const audio =
+        new Audio(
+        "https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg"
+        );
 
-        const data = await response.json();
+        audio.volume = 1.0;
 
-        if(!Array.isArray(data) || data.length < 2){
+        audio.play().catch(error=>{
+
+            console.log(
+            "Sound play blocked by browser:",
+            error
+            );
+
+        });
+
+    }catch(error){
+
+        console.log(error);
+
+    }
+
+}
+
+
+/* BROWSER NOTIFICATION */
+
+function showBrowserNotification(orderId){
+
+    if(
+        "Notification" in window &&
+        Notification.permission === "granted"
+    ){
+
+        new Notification(
+            "🍳 ITI Chai Wala - New Order!",
+            {
+                body:
+                "New Order: " + orderId
+            }
+        );
+
+    }
+
+}
+
+
+/* SCREEN NOTIFICATION */
+
+function showScreenNotification(orderId){
+
+    const box =
+    document.getElementById(
+        "notificationBox"
+    );
+
+    const text =
+    document.getElementById(
+        "notificationText"
+    );
+
+    text.innerText =
+    "🆕 New Order received: " +
+    orderId;
+
+    box.classList.add("show");
+
+}
+
+
+/* CLOSE NOTIFICATION */
+
+function closeNotification(){
+
+    document
+    .getElementById("notificationBox")
+    .classList.remove("show");
+
+}
+
+
+/* CHECK NEW ORDERS */
+
+function checkNewOrders(currentOrders){
+
+    const currentIds =
+    currentOrders.map(
+        order => String(order.orderId)
+    );
+
+
+    /*
+       First page load par purane orders
+       ki sound nahi bajegi.
+    */
+
+    if(firstLoad){
+
+        previousOrderIds =
+        currentIds;
+
+        firstLoad = false;
+
+        return;
+
+    }
+
+
+    currentIds.forEach(id=>{
+
+        if(
+            id &&
+            !previousOrderIds.includes(id)
+        ){
+
+            console.log(
+                "NEW ORDER:",
+                id
+            );
+
+            playNotificationSound();
+
+            showBrowserNotification(id);
+
+            showScreenNotification(id);
+
+        }
+
+    });
+
+
+    previousOrderIds =
+    currentIds;
+
+}
+
+
+/* LOAD ORDERS */
+
+async function loadOrders(){
+
+    const box =
+    document.getElementById("orders");
+
+
+    try{
+
+        const response =
+        await fetch(
+            BACKEND_URL +
+            "?t=" +
+            Date.now()
+        );
+
+
+        const data =
+        await response.json();
+
+
+        if(
+            !Array.isArray(data) ||
+            data.length < 2
+        ){
 
             box.innerHTML =
             '<div class="empty">कोई order नहीं है।</div>';
 
-            document.getElementById("orderCount").innerText =
+
+            document
+            .getElementById(
+                "orderCount"
+            )
+            .innerText =
             "Orders: 0";
 
+
             return;
+
         }
 
-        const rows = data.slice(1);
+
+        const rows =
+        data.slice(1);
+
 
         const orders = {};
 
-        rows.forEach(row => {
 
-            const time = row[0];
-            const table = row[1];
-            const item = row[2];
-            const qty = Number(row[3]);
-            const price = Number(row[4]);
-            const total = Number(row[5]);
-            const status = row[6] || "New";
-            const orderId = row[7];
+        rows.forEach(row=>{
+
+            if(
+                !row ||
+                row.length < 8
+            ){
+
+                return;
+
+            }
+
+
+            const time =
+            row[0];
+
+            const table =
+            row[1];
+
+            const item =
+            row[2];
+
+            const qty =
+            Number(row[3]) || 0;
+
+            const price =
+            Number(row[4]) || 0;
+
+            const total =
+            Number(row[5]) || 0;
+
+            const status =
+            row[6] || "New";
+
+            const orderId =
+            String(row[7] || "");
+
+
+            if(!orderId){
+
+                return;
+
+            }
+
 
             if(!orders[orderId]){
 
                 orders[orderId] = {
-                    orderId: orderId,
-                    time: time,
-                    table: table,
-                    status: status,
-                    items: [],
-                    total: 0
+
+                    orderId:
+                    orderId,
+
+                    time:
+                    time,
+
+                    table:
+                    table,
+
+                    status:
+                    status,
+
+                    items:
+                    [],
+
+                    total:
+                    0
+
                 };
 
             }
 
-            orders[orderId].items.push({
-                name: item,
-                qty: qty,
-                price: price,
-                total: total
+
+            orders[orderId]
+            .items
+            .push({
+
+                name:
+                item,
+
+                qty:
+                qty,
+
+                price:
+                price,
+
+                total:
+                total
+
             });
 
-            orders[orderId].total += total;
+
+            orders[orderId]
+            .total += total;
+
+
+            /*
+              Agar kisi order ki status
+              later row me updated ho,
+              latest status rakhenge.
+            */
+
+            orders[orderId]
+            .status =
+            status;
 
         });
 
 
-        allOrders = Object.values(orders);
+        const newOrders =
+        Object.values(orders);
+
+
+        /*
+           New order notification
+        */
+
+        checkNewOrders(
+            newOrders
+        );
+
+
+        allOrders =
+        newOrders;
+
 
         // नए orders सबसे ऊपर
+
         allOrders.reverse();
 
-        document.getElementById("orderCount").innerText =
-        "Orders: " + allOrders.length;
+
+        document
+        .getElementById(
+            "orderCount"
+        )
+        .innerText =
+        "Orders: " +
+        allOrders.length;
+
 
         renderOrders();
+
 
     }catch(error){
 
         box.innerHTML =
         '<div class="empty">Orders load नहीं हो सके। Internet check करें।</div>';
 
+
         console.error(error);
+
     }
+
 }
 
 
+/* RENDER ORDERS */
+
 function renderOrders(){
 
-    const box = document.getElementById("orders");
+    const box =
+    document.getElementById(
+        "orders"
+    );
 
-    if(allOrders.length === 0){
+
+    if(
+        allOrders.length === 0
+    ){
 
         box.innerHTML =
         '<div class="empty">अभी कोई order नहीं है।</div>';
 
         return;
+
     }
 
 
     box.innerHTML = "";
 
 
-    allOrders.forEach(order => {
+    allOrders.forEach(order=>{
 
-        const card = document.createElement("div");
+        const card =
+        document.createElement(
+            "div"
+        );
+
 
         card.className =
-        "order " + order.status.toLowerCase();
+        "order " +
+        String(
+            order.status
+        ).toLowerCase();
 
 
         let itemsHTML = "";
 
-        order.items.forEach(item => {
+
+        order.items.forEach(item=>{
 
             itemsHTML += `
+
                 <div class="item">
+
                     <span>
-                        ${item.name} × ${item.qty}
+                        ${escapeHTML(item.name)}
+                        × ${item.qty}
                     </span>
 
                     <span>
                         ₹${item.total}
                     </span>
+
                 </div>
+
             `;
 
         });
@@ -341,28 +720,37 @@ function renderOrders(){
             <div class="order-head">
 
                 <div class="table">
-                    🪑 Table ${order.table}
+                    🪑 Table
+                    ${escapeHTML(order.table)}
                 </div>
 
                 <div class="time">
-                    ${order.time}
+                    ${escapeHTML(order.time)}
                 </div>
 
             </div>
 
 
             <div>
+
                 ${itemsHTML}
+
             </div>
 
 
             <div class="total">
-                Total: ₹${order.total}
+
+                Total:
+                ₹${order.total}
+
             </div>
 
 
             <div class="status">
-                Status: ${order.status}
+
+                Status:
+                ${escapeHTML(order.status)}
+
             </div>
 
 
@@ -370,26 +758,37 @@ function renderOrders(){
 
                 <button
                     class="prepare"
-                    onclick="changeStatus('${order.orderId}','Preparing')">
+                    onclick="changeStatus('${escapeAttribute(order.orderId)}','Preparing')">
+
                     🔥 Preparing
+
                 </button>
+
 
                 <button
                     class="complete"
-                    onclick="changeStatus('${order.orderId}','Complete')">
+                    onclick="changeStatus('${escapeAttribute(order.orderId)}','Complete')">
+
                     ✅ Complete
+
                 </button>
+
 
                 <button
                     class="delivered"
-                    onclick="changeStatus('${order.orderId}','Delivered')">
+                    onclick="changeStatus('${escapeAttribute(order.orderId)}','Delivered')">
+
                     🚚 Delivered
+
                 </button>
+
 
                 <button
                     class="delete"
-                    onclick="deleteOrder('${order.orderId}')">
+                    onclick="deleteOrder('${escapeAttribute(order.orderId)}')">
+
                     🗑️ Delete
+
                 </button>
 
             </div>
@@ -404,73 +803,168 @@ function renderOrders(){
 }
 
 
-async function changeStatus(orderId,status){
+/* CHANGE STATUS */
+
+async function changeStatus(
+    orderId,
+    status
+){
 
     try{
 
-        await fetch(BACKEND_URL,{
-            method:"POST",
+        await fetch(
+            BACKEND_URL,
+            {
 
-            body:JSON.stringify({
-                action:"updateStatus",
-                orderId:orderId,
-                status:status
-            })
+                method:
+                "POST",
 
-        });
+                body:
+                JSON.stringify({
+
+                    action:
+                    "updateStatus",
+
+                    orderId:
+                    orderId,
+
+                    status:
+                    status
+
+                })
+
+            }
+        );
+
 
         loadOrders();
 
+
     }catch(error){
 
-        alert("Status update नहीं हुआ।");
+        alert(
+            "Status update नहीं हुआ।"
+        );
 
     }
 
 }
 
 
-async function deleteOrder(orderId){
+/* DELETE ORDER */
+
+async function deleteOrder(
+    orderId
+){
 
     const confirmDelete =
-    confirm("क्या आप इस पूरे order को delete करना चाहते हैं?");
+    confirm(
+        "क्या आप इस पूरे order को delete करना चाहते हैं?"
+    );
+
 
     if(!confirmDelete){
+
         return;
+
     }
 
 
     try{
 
-        await fetch(BACKEND_URL,{
-            method:"POST",
+        await fetch(
+            BACKEND_URL,
+            {
 
-            body:JSON.stringify({
-                action:"deleteOrder",
-                orderId:orderId
-            })
+                method:
+                "POST",
 
-        });
+                body:
+                JSON.stringify({
+
+                    action:
+                    "deleteOrder",
+
+                    orderId:
+                    orderId
+
+                })
+
+            }
+        );
+
 
         loadOrders();
 
+
     }catch(error){
 
-        alert("Order delete नहीं हुआ।");
+        alert(
+            "Order delete नहीं हुआ।"
+        );
 
     }
 
 }
 
 
-// पहली बार load
+/* SECURITY */
+
+function escapeHTML(value){
+
+    return String(value)
+
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+
+    .replace(
+        /</g,
+        "&lt;"
+    )
+
+    .replace(
+        />/g,
+        "&gt;"
+    )
+
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+function escapeAttribute(value){
+
+    return escapeHTML(value);
+
+}
+
+
+/* FIRST LOAD */
+
 loadOrders();
 
 
-// हर 10 सेकंड में refresh
-setInterval(loadOrders,10000);
+/*
+   हर 10 सेकंड में kitchen
+   नए orders check करेगा.
+*/
+
+setInterval(
+    loadOrders,
+    10000
+);
 
 </script>
 
 </body>
-</html>
+    </html>
