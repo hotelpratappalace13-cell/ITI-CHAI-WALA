@@ -210,6 +210,7 @@ header p{
     margin-top:6px;
     font-size:15px;
     color:#444;
+    white-space:pre-line;
 }
 
 .notification-close{
@@ -223,13 +224,32 @@ header p{
 }
 
 
-/* SOUND ENABLED MESSAGE */
+/* SOUND STATUS */
 
 .sound-status{
     text-align:center;
     margin-bottom:12px;
     font-size:13px;
     color:#555;
+}
+
+
+/* CONNECTION STATUS */
+
+.connection-status{
+    text-align:center;
+    margin-bottom:12px;
+    font-size:13px;
+    color:#777;
+}
+
+.connection-status.retrying{
+    color:#e67e22;
+    font-weight:bold;
+}
+
+.connection-status.online{
+    color:#27ae60;
 }
 
 
@@ -340,6 +360,15 @@ header p{
     </div>
 
 
+    <div
+        id="connectionStatus"
+        class="connection-status">
+
+        🟢 Connecting...
+
+    </div>
+
+
     <div id="orders">
 
         <div class="empty">
@@ -363,6 +392,17 @@ let allOrders = [];
 let previousOrderIds = [];
 
 let firstLoad = true;
+
+
+/* RETRY VARIABLES */
+
+let retryTimer = null;
+
+let isLoading = false;
+
+let retryCount = 0;
+
+const MAX_RETRY_DELAY = 10000;
 
 
 /* SOUND VARIABLES */
@@ -390,6 +430,28 @@ if("Notification" in window){
         console.log(error);
 
     });
+
+}
+
+
+/* CONNECTION STATUS */
+
+function setConnectionStatus(
+    message,
+    type=""
+){
+
+    const status =
+    document.getElementById(
+        "connectionStatus"
+    );
+
+    status.innerText =
+    message;
+
+    status.className =
+    "connection-status " +
+    type;
 
 }
 
@@ -547,8 +609,6 @@ function playNotificationSound(){
 
     try{
 
-        /* First beep */
-
         const oscillator1 =
         audioContext.createOscillator();
 
@@ -588,11 +648,16 @@ function playNotificationSound(){
         );
 
 
-        /* Second beep */
+        /* SECOND BEEP */
 
         setTimeout(()=>{
 
             try{
+
+                if(!audioContext){
+                    return;
+                }
+
 
                 const oscillator2 =
                 audioContext.createOscillator();
@@ -653,7 +718,9 @@ function playNotificationSound(){
 
 /* BROWSER NOTIFICATION */
 
-function showBrowserNotification(orderId){
+function showBrowserNotification(
+    orderId
+){
 
     if(
         "Notification" in window &&
@@ -667,7 +734,8 @@ function showBrowserNotification(orderId){
                 "🔔 ITI Chai Wala",
                 {
                     body:
-                    "🆕 New Order Arrive"
+                    "🆕 New Order Arrive\nOrder ID: " +
+                    orderId
                 }
             );
 
@@ -776,14 +844,14 @@ function checkNewOrders(
             playNotificationSound();
 
 
-            /* BROWSER */
+            /* BROWSER NOTIFICATION */
 
             showBrowserNotification(
                 id
             );
 
 
-            /* SCREEN */
+            /* SCREEN NOTIFICATION */
 
             showScreenNotification(
                 id
@@ -800,14 +868,73 @@ function checkNewOrders(
 }
 
 
+/* AUTOMATIC RETRY */
+
+function scheduleRetry(){
+
+    if(retryTimer){
+
+        clearTimeout(
+            retryTimer
+        );
+
+    }
+
+
+    retryCount++;
+
+
+    /*
+       Retry:
+       1st failure = 3 sec
+       2nd failure = 6 sec
+       3rd+ failure = 10 sec max
+    */
+
+    const delay =
+    Math.min(
+        3000 * retryCount,
+        MAX_RETRY_DELAY
+    );
+
+
+    setConnectionStatus(
+        "🔄 Connection failed — " +
+        Math.round(delay / 1000) +
+        " sec में फिर कोशिश होगी...",
+        "retrying"
+    );
+
+
+    retryTimer =
+    setTimeout(()=>{
+
+        retryTimer = null;
+
+        loadOrders();
+
+    },delay);
+
+}
+
+
 /* LOAD ORDERS */
 
 async function loadOrders(){
 
-    const box =
-    document.getElementById(
-        "orders"
-    );
+    /*
+       अगर पहले से request चल रही है
+       तो दूसरी request शुरू नहीं करेंगे।
+    */
+
+    if(isLoading){
+
+        return;
+
+    }
+
+
+    isLoading = true;
 
 
     try{
@@ -816,21 +943,82 @@ async function loadOrders(){
         await fetch(
             BACKEND_URL +
             "?t=" +
-            Date.now()
+            Date.now(),
+            {
+                method:"GET",
+                cache:"no-store"
+            }
         );
+
+
+        /*
+           HTTP response successful नहीं है
+           तो इसे failed request मानेंगे।
+        */
+
+        if(!response.ok){
+
+            throw new Error(
+                "HTTP Error: " +
+                response.status
+            );
+
+        }
 
 
         const data =
         await response.json();
 
 
+        /*
+           Backend से गलत data आया
+           तो existing orders को touch नहीं करेंगे।
+        */
+
         if(
-            !Array.isArray(data) ||
+            !Array.isArray(data)
+        ){
+
+            throw new Error(
+                "Invalid backend response"
+            );
+
+        }
+
+
+        /* SUCCESS */
+
+        retryCount = 0;
+
+
+        if(retryTimer){
+
+            clearTimeout(
+                retryTimer
+            );
+
+            retryTimer = null;
+
+        }
+
+
+        setConnectionStatus(
+            "🟢 Connected",
+            "online"
+        );
+
+
+        /*
+           Backend में कोई order नहीं है।
+           यह SUCCESS response है,
+           इसलिए तभी orders clear होंगे।
+        */
+
+        if(
             data.length < 2
         ){
 
-            box.innerHTML =
-            '<div class="empty">कोई order नहीं है।</div>';
+            allOrders = [];
 
 
             document
@@ -839,6 +1027,9 @@ async function loadOrders(){
             )
             .innerText =
             "Orders: 0";
+
+
+            renderOrders();
 
 
             return;
@@ -970,7 +1161,7 @@ async function loadOrders(){
         );
 
 
-        /* CHECK NEW ORDER */
+        /* CHECK NEW ORDERS */
 
         checkNewOrders(
             newOrders
@@ -1000,11 +1191,42 @@ async function loadOrders(){
 
     }catch(error){
 
-        box.innerHTML =
-        '<div class="empty">Orders load नहीं हो सके। Internet check करें।</div>';
+        console.error(
+            "Load orders failed:",
+            error
+        );
 
 
-        console.error(error);
+        /*
+           IMPORTANT:
+           यहां allOrders को clear नहीं किया गया है।
+
+           इसलिए Internet/backend temporary fail होने पर
+           पहले से दिखाई दे रहे orders गायब नहीं होंगे।
+        */
+
+        if(allOrders.length === 0){
+
+            document
+            .getElementById(
+                "orders"
+            )
+            .innerHTML =
+            '<div class="empty">Orders load नहीं हो सके। Internet check करें।<br><br>🔄 Automatic retry चल रहा है...</div>';
+
+        }
+
+
+        /*
+           Automatic retry शुरू करें।
+        */
+
+        scheduleRetry();
+
+
+    }finally{
+
+        isLoading = false;
 
     }
 
@@ -1220,6 +1442,7 @@ async function changeStatus(
 
     try{
 
+        const response =
         await fetch(
             BACKEND_URL,
             {
@@ -1245,13 +1468,27 @@ async function changeStatus(
         );
 
 
+        if(!response.ok){
+
+            throw new Error(
+                "Status update failed"
+            );
+
+        }
+
+
         loadOrders();
 
 
     }catch(error){
 
+        console.error(
+            error
+        );
+
+
         alert(
-            "Status update नहीं हुआ।"
+            "Status update नहीं हुआ। Internet check करें।"
         );
 
     }
@@ -1280,6 +1517,7 @@ async function deleteOrder(
 
     try{
 
+        const response =
         await fetch(
             BACKEND_URL,
             {
@@ -1302,13 +1540,27 @@ async function deleteOrder(
         );
 
 
+        if(!response.ok){
+
+            throw new Error(
+                "Delete failed"
+            );
+
+        }
+
+
         loadOrders();
 
 
     }catch(error){
 
+        console.error(
+            error
+        );
+
+
         alert(
-            "Order delete नहीं हुआ।"
+            "Order delete नहीं हुआ। Internet check करें।"
         );
 
     }
@@ -1371,11 +1623,15 @@ loadOrders();
 /* CHECK EVERY 15 SECONDS */
 
 setInterval(
-    loadOrders,
+    function(){
+
+        loadOrders();
+
+    },
     15000
 );
 
 </script>
 
 </body>
-    </html>
+</html>
