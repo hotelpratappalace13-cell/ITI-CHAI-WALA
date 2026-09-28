@@ -7,6 +7,7 @@
 <title>ITI Chai Wala | Owner Panel</title>
 
 <style>
+
 *{
     margin:0;
     padding:0;
@@ -198,7 +199,7 @@ body{
 
 table{
     width:100%;
-    min-width:900px;
+    min-width:800px;
     border-collapse:collapse;
 }
 
@@ -248,26 +249,6 @@ tr:hover td{
     color:#555;
 }
 
-.action{
-    background:#421a04;
-    color:white;
-    border:0;
-    padding:7px 9px;
-    border-radius:7px;
-    font-size:11px;
-    font-weight:bold;
-}
-
-.delete{
-    background:#dc3545;
-    color:white;
-    border:0;
-    padding:7px 9px;
-    border-radius:7px;
-    font-size:11px;
-    font-weight:bold;
-}
-
 .empty{
     text-align:center;
     padding:30px;
@@ -278,7 +259,7 @@ tr:hover td{
 
 .table-grid{
     display:grid;
-    grid-template-columns:repeat(7,1fr);
+    grid-template-columns:repeat(10,1fr);
     gap:12px;
 }
 
@@ -478,6 +459,7 @@ tr:hover td{
     }
 
 }
+
 </style>
 </head>
 
@@ -611,7 +593,6 @@ tr:hover td{
 <th>Total</th>
 <th>Time</th>
 <th>Status</th>
-<th>Action</th>
 </tr>
 
 </thead>
@@ -619,7 +600,7 @@ tr:hover td{
 <tbody id="ordersBody">
 
 <tr>
-<td colspan="8" class="empty">
+<td colspan="7" class="empty">
 Orders loading...
 </td>
 </tr>
@@ -648,7 +629,7 @@ Orders loading...
 </div>
 
 
-<!-- QUICK ACTIONS -->
+<!-- QUICK INFORMATION -->
 
 <div class="section">
 
@@ -698,7 +679,7 @@ Orders loading...
 </div>
 
 
-<!-- SETTINGS AT BOTTOM -->
+<!-- SETTINGS -->
 
 <div class="section settings">
 
@@ -756,7 +737,7 @@ const body=document.getElementById("ordersBody");
 
 body.innerHTML=`
 <tr>
-<td colspan="8" class="empty">
+<td colspan="7" class="empty">
 Orders loading...
 </td>
 </tr>`;
@@ -809,7 +790,7 @@ console.log(error);
 
 body.innerHTML=`
 <tr>
-<td colspan="8" class="empty">
+<td colspan="7" class="empty">
 ❌ Orders load nahi ho rahe
 </td>
 </tr>`;
@@ -838,7 +819,7 @@ if(active.length===0){
 
 body.innerHTML=`
 <tr>
-<td colspan="8" class="empty">
+<td colspan="7" class="empty">
 📭 Koi active order nahi hai
 </td>
 </tr>`;
@@ -883,22 +864,6 @@ ${escapeHTML(order.time)}
 ${statusHTML(order.status)}
 </td>
 
-<td>
-
-<button
-class="action"
-onclick="changeStatus('${encodeURIComponent(order.orderId)}')">
-Status
-</button>
-
-<button
-class="delete"
-onclick="deleteOrder('${encodeURIComponent(order.orderId)}')">
-Delete
-</button>
-
-</td>
-
 `;
 
 body.appendChild(tr);
@@ -908,7 +873,7 @@ body.appendChild(tr);
 }
 
 
-/* STATUS */
+/* STATUS DISPLAY ONLY */
 
 function statusHTML(status){
 
@@ -926,111 +891,6 @@ return`
 <span class="status ${cls}">
 ${escapeHTML(status)}
 </span>`;
-
-}
-
-
-/* CHANGE STATUS */
-
-async function changeStatus(encoded){
-
-const orderId=decodeURIComponent(encoded);
-
-const status=prompt(
-"Status likho:\n\nNew\nPreparing\nComplete\nDelivered"
-);
-
-if(!status) return;
-
-const valid=[
-"New",
-"Preparing",
-"Complete",
-"Delivered"
-];
-
-const found=valid.find(
-x=>x.toLowerCase()===status.toLowerCase()
-);
-
-if(!found){
-
-alert("Sirf New, Preparing, Complete ya Delivered likho.");
-
-return;
-
-}
-
-
-try{
-
-await fetch(API_URL,{
-
-method:"POST",
-
-body:JSON.stringify({
-
-action:"updateStatus",
-orderId:orderId,
-status:found
-
-})
-
-});
-
-
-alert("Status update ho gaya ✅");
-
-loadOrders();
-
-}
-
-catch(error){
-
-alert("Status update nahi hua.");
-
-}
-
-}
-
-
-/* DELETE */
-
-async function deleteOrder(encoded){
-
-const orderId=decodeURIComponent(encoded);
-
-if(!confirm("Kya aap is order ko delete karna chahte ho?"))
-return;
-
-
-try{
-
-await fetch(API_URL,{
-
-method:"POST",
-
-body:JSON.stringify({
-
-action:"deleteOrder",
-orderId:orderId
-
-})
-
-});
-
-
-alert("Order delete ho gaya ✅");
-
-loadOrders();
-
-}
-
-catch(error){
-
-alert("Order delete nahi hua.");
-
-}
 
 }
 
@@ -1152,7 +1012,7 @@ const grid=document.getElementById("tableGrid");
 grid.innerHTML="";
 
 
-for(let t=1;t<=7;t++){
+for(let t=1;t<=10;t++){
 
 const tableOrders=
 allOrders.filter(o=>
@@ -1163,7 +1023,6 @@ o.status.toLowerCase()!=="delivered"
 
 let status="FREE";
 
-let color="";
 
 if(tableOrders.length>0){
 
@@ -1178,15 +1037,21 @@ o.status.toLowerCase()==="complete"
 );
 
 if(preparing){
+
 status="PREPARING";
+
 }
 
 else if(complete){
+
 status="COMPLETE";
+
 }
 
 else{
+
 status="NEW ORDER";
+
 }
 
 }
@@ -1224,7 +1089,8 @@ try{
 const response=
 await fetch(API_URL+"?action=menu");
 
-const data=await response.json();
+const data=
+await response.json();
 
 const rows=
 document.getElementById("menuRows");
