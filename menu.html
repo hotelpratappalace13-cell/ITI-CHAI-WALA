@@ -257,11 +257,6 @@ header p{
     color:#777;
 }
 
-
-/* =========================
-TRACK ORDER BOX
-========================= */
-
 .track-box{
     display:none;
     background:white;
@@ -316,9 +311,6 @@ TRACK ORDER BOX
 
 </div>
 
-
-<!-- TRACK ORDER -->
-
 <div class="track-box" id="trackBox">
 
 <h3>📦 Your Order</h3>
@@ -334,7 +326,6 @@ href="#"
 </a>
 
 </div>
-
 
 <div class="search">
 
@@ -369,7 +360,6 @@ View Cart
 </button>
 
 </div>
-
 
 <div class="overlay" id="cartOverlay">
 
@@ -406,20 +396,14 @@ Close
 
 </div>
 
-
 <script>
-
-
-/* =========================
-BACKEND
-========================= */
 
 const BACKEND_URL =
 "https://script.google.com/macros/s/AKfycbx7PWk-_E0MU2bn5VsLMVHGMGbZFVjRaSYCXJXn50ay2_kodfrKc43EddUNc7EujMJb8g/exec";
 
 
 /* =========================
-TABLE
+TABLE 1 TO 10
 ========================= */
 
 const params =
@@ -428,7 +412,7 @@ new URLSearchParams(window.location.search);
 const table =
 Number(params.get("table"));
 
-if(table >= 1 && table <= 7){
+if(table >= 1 && table <= 10){
 
 document.getElementById("tableNumber")
 .textContent =
@@ -828,7 +812,7 @@ menu.innerHTML += html;
 
 
 /* =========================
-HALF / FULL / SMALL / BIG
+OPTION SELECT
 ========================= */
 
 function selectOption(button,type){
@@ -1126,7 +1110,7 @@ PLACE ORDER
 
 async function placeOrder(){
 
-if(!(table >= 1 && table <= 7)){
+if(!(table >= 1 && table <= 10)){
 
 alert(
 "⚠️ Table number नहीं मिला। कृपया सही table QR scan करें।"
@@ -1152,7 +1136,6 @@ document.getElementById("placeOrderButton");
 button.disabled=true;
 
 button.textContent="⏳ Order भेजा जा रहा है...";
-
 
 const orderData = {
 
@@ -1186,12 +1169,7 @@ body:JSON.stringify(orderData)
 const result =
 await response.json();
 
-
 if(result.success){
-
-/* =========================
-SHOW ORDER ID
-========================= */
 
 const orderId =
 result.orderId;
@@ -1200,24 +1178,13 @@ document.getElementById("trackOrderId")
 .innerText =
 "Order ID: " + orderId;
 
-
-/* =========================
-TRACK LINK
-========================= */
-
 document.getElementById("trackButton")
 .href =
 "order-status.html?order=" +
 encodeURIComponent(orderId);
 
-
-/* =========================
-SHOW TRACK BOX
-========================= */
-
 document.getElementById("trackBox")
 .style.display="block";
-
 
 alert(
 "✅ आपका order successfully भेज दिया गया!\n\nOrder ID: " +
@@ -1230,7 +1197,6 @@ cart=[];
 updateCart();
 
 closeCart();
-
 
 }else{
 
