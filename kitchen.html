@@ -54,13 +54,27 @@ header p{
     font-weight:bold;
 }
 
-.refresh{
+.top-buttons{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.refresh,
+.sound{
     border:none;
-    background:#e67e22;
     color:white;
     padding:10px 15px;
     border-radius:8px;
     font-weight:bold;
+}
+
+.refresh{
+    background:#e67e22;
+}
+
+.sound{
+    background:#27ae60;
 }
 
 .order{
@@ -163,6 +177,7 @@ header p{
     color:#777;
 }
 
+
 /* NEW ORDER NOTIFICATION */
 
 .notification-box{
@@ -186,14 +201,14 @@ header p{
 }
 
 .notification-title{
-    font-size:18px;
+    font-size:20px;
     font-weight:bold;
     color:#c45d00;
 }
 
 .notification-text{
     margin-top:6px;
-    font-size:14px;
+    font-size:15px;
     color:#444;
 }
 
@@ -207,7 +222,31 @@ header p{
     font-weight:bold;
 }
 
+
+/* SOUND ENABLED MESSAGE */
+
+.sound-status{
+    text-align:center;
+    margin-bottom:12px;
+    font-size:13px;
+    color:#555;
+}
+
+
 @media(max-width:500px){
+
+    .topbar{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .top-buttons{
+        width:100%;
+    }
+
+    .top-buttons button{
+        flex:1;
+    }
 
     .order-head{
         flex-direction:column;
@@ -226,8 +265,11 @@ header p{
 <body>
 
 <header>
+
     <h1>🍳 ITI Chai Wala</h1>
+
     <p>Kitchen Order Panel</p>
+
 </header>
 
 
@@ -240,13 +282,15 @@ header p{
     </div>
 
     <div id="notificationText" class="notification-text">
-        New order received.
+        🆕 New Order Arrive
     </div>
 
     <button
         class="notification-close"
         onclick="closeNotification()">
+
         OK
+
     </button>
 
 </div>
@@ -254,17 +298,44 @@ header p{
 
 <div class="container">
 
+
     <div class="topbar">
 
         <div class="count" id="orderCount">
             Orders: 0
         </div>
 
-        <button
-            class="refresh"
-            onclick="loadOrders()">
-            🔄 Refresh
-        </button>
+
+        <div class="top-buttons">
+
+            <button
+                class="sound"
+                id="soundButton"
+                onclick="enableSound()">
+
+                🔊 Enable Sound
+
+            </button>
+
+
+            <button
+                class="refresh"
+                onclick="loadOrders()">
+
+                🔄 Refresh
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div
+        id="soundStatus"
+        class="sound-status">
+
+        🔇 Sound is OFF — Enable Sound दबाएं
 
     </div>
 
@@ -282,6 +353,7 @@ header p{
 
 <script>
 
+
 const BACKEND_URL =
 "https://script.google.com/macros/s/AKfycbx7PWk-_E0MU2bn5VsLMVHGMGbZFVjRaSYCXJXn50ay2_kodfrKc43EddUNc7EujMJb8g/exec";
 
@@ -293,36 +365,282 @@ let previousOrderIds = [];
 let firstLoad = true;
 
 
+/* SOUND VARIABLES */
+
+let audioContext = null;
+
+let soundEnabled = false;
+
+
 /* NOTIFICATION PERMISSION */
 
 if("Notification" in window){
 
-    Notification.requestPermission();
+    Notification.requestPermission()
+    .then(permission=>{
+
+        console.log(
+            "Notification permission:",
+            permission
+        );
+
+    })
+    .catch(error=>{
+
+        console.log(error);
+
+    });
 
 }
 
 
-/* SOUND */
+/* ENABLE SOUND */
 
-function playNotificationSound(){
+function enableSound(){
 
     try{
 
-        const audio =
-        new Audio(
-        "https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg"
-        );
+        const AudioContext =
+        window.AudioContext ||
+        window.webkitAudioContext;
 
-        audio.volume = 1.0;
 
-        audio.play().catch(error=>{
+        if(!AudioContext){
 
-            console.log(
-            "Sound play blocked by browser:",
-            error
+            alert(
+                "इस browser में sound support नहीं है।"
             );
 
-        });
+            return;
+
+        }
+
+
+        if(!audioContext){
+
+            audioContext =
+            new AudioContext();
+
+        }
+
+
+        if(
+            audioContext.state ===
+            "suspended"
+        ){
+
+            audioContext.resume();
+
+        }
+
+
+        soundEnabled = true;
+
+
+        document.getElementById(
+            "soundButton"
+        ).innerText =
+        "🔊 Sound ON";
+
+
+        document.getElementById(
+            "soundStatus"
+        ).innerText =
+        "🔊 Sound is ON — New Order पर sound आएगी";
+
+
+        /* TEST SOUND */
+
+        playTestSound();
+
+
+    }catch(error){
+
+        console.log(error);
+
+        alert(
+            "Sound enable नहीं हुआ।"
+        );
+
+    }
+
+}
+
+
+/* TEST SOUND */
+
+function playTestSound(){
+
+    if(!audioContext){
+        return;
+    }
+
+
+    try{
+
+        const oscillator =
+        audioContext.createOscillator();
+
+
+        const gain =
+        audioContext.createGain();
+
+
+        oscillator.type =
+        "sine";
+
+
+        oscillator.frequency.setValueAtTime(
+            900,
+            audioContext.currentTime
+        );
+
+
+        gain.gain.setValueAtTime(
+            0.8,
+            audioContext.currentTime
+        );
+
+
+        oscillator.connect(gain);
+
+        gain.connect(
+            audioContext.destination
+        );
+
+
+        oscillator.start();
+
+
+        oscillator.stop(
+            audioContext.currentTime +
+            0.5
+        );
+
+
+    }catch(error){
+
+        console.log(error);
+
+    }
+
+}
+
+
+/* NEW ORDER SOUND */
+
+function playNotificationSound(){
+
+    if(
+        !soundEnabled ||
+        !audioContext
+    ){
+
+        console.log(
+            "Sound is not enabled."
+        );
+
+        return;
+
+    }
+
+
+    try{
+
+        /* First beep */
+
+        const oscillator1 =
+        audioContext.createOscillator();
+
+        const gain1 =
+        audioContext.createGain();
+
+
+        oscillator1.type =
+        "sine";
+
+
+        oscillator1.frequency.setValueAtTime(
+            900,
+            audioContext.currentTime
+        );
+
+
+        gain1.gain.setValueAtTime(
+            0.8,
+            audioContext.currentTime
+        );
+
+
+        oscillator1.connect(gain1);
+
+        gain1.connect(
+            audioContext.destination
+        );
+
+
+        oscillator1.start();
+
+
+        oscillator1.stop(
+            audioContext.currentTime +
+            0.35
+        );
+
+
+        /* Second beep */
+
+        setTimeout(()=>{
+
+            try{
+
+                const oscillator2 =
+                audioContext.createOscillator();
+
+                const gain2 =
+                audioContext.createGain();
+
+
+                oscillator2.type =
+                "sine";
+
+
+                oscillator2.frequency.setValueAtTime(
+                    1200,
+                    audioContext.currentTime
+                );
+
+
+                gain2.gain.setValueAtTime(
+                    0.8,
+                    audioContext.currentTime
+                );
+
+
+                oscillator2.connect(gain2);
+
+                gain2.connect(
+                    audioContext.destination
+                );
+
+
+                oscillator2.start();
+
+
+                oscillator2.stop(
+                    audioContext.currentTime +
+                    0.45
+                );
+
+
+            }catch(error){
+
+                console.log(error);
+
+            }
+
+        },400);
+
 
     }catch(error){
 
@@ -339,16 +657,25 @@ function showBrowserNotification(orderId){
 
     if(
         "Notification" in window &&
-        Notification.permission === "granted"
+        Notification.permission ===
+        "granted"
     ){
 
-        new Notification(
-            "🍳 ITI Chai Wala - New Order!",
-            {
-                body:
-                "New Order: " + orderId
-            }
-        );
+        try{
+
+            new Notification(
+                "🔔 ITI Chai Wala",
+                {
+                    body:
+                    "🆕 New Order Arrive"
+                }
+            );
+
+        }catch(error){
+
+            console.log(error);
+
+        }
 
     }
 
@@ -357,23 +684,30 @@ function showBrowserNotification(orderId){
 
 /* SCREEN NOTIFICATION */
 
-function showScreenNotification(orderId){
+function showScreenNotification(
+    orderId
+){
 
     const box =
     document.getElementById(
         "notificationBox"
     );
 
+
     const text =
     document.getElementById(
         "notificationText"
     );
 
+
     text.innerText =
-    "🆕 New Order received: " +
+    "🆕 New Order Arrive\nOrder ID: " +
     orderId;
 
-    box.classList.add("show");
+
+    box.classList.add(
+        "show"
+    );
 
 }
 
@@ -383,26 +717,32 @@ function showScreenNotification(orderId){
 function closeNotification(){
 
     document
-    .getElementById("notificationBox")
-    .classList.remove("show");
+    .getElementById(
+        "notificationBox"
+    )
+    .classList.remove(
+        "show"
+    );
 
 }
 
 
 /* CHECK NEW ORDERS */
 
-function checkNewOrders(currentOrders){
+function checkNewOrders(
+    currentOrders
+){
 
     const currentIds =
     currentOrders.map(
-        order => String(order.orderId)
+        order =>
+        String(
+            order.orderId
+        )
     );
 
 
-    /*
-       First page load par purane orders
-       ki sound nahi bajegi.
-    */
+    /* FIRST LOAD */
 
     if(firstLoad){
 
@@ -416,6 +756,8 @@ function checkNewOrders(currentOrders){
     }
 
 
+    /* CHECK NEW ID */
+
     currentIds.forEach(id=>{
 
         if(
@@ -424,15 +766,28 @@ function checkNewOrders(currentOrders){
         ){
 
             console.log(
-                "NEW ORDER:",
+                "🆕 NEW ORDER:",
                 id
             );
 
+
+            /* SOUND */
+
             playNotificationSound();
 
-            showBrowserNotification(id);
 
-            showScreenNotification(id);
+            /* BROWSER */
+
+            showBrowserNotification(
+                id
+            );
+
+
+            /* SCREEN */
+
+            showScreenNotification(
+                id
+            );
 
         }
 
@@ -450,7 +805,9 @@ function checkNewOrders(currentOrders){
 async function loadOrders(){
 
     const box =
-    document.getElementById("orders");
+    document.getElementById(
+        "orders"
+    );
 
 
     try{
@@ -511,26 +868,35 @@ async function loadOrders(){
             const time =
             row[0];
 
+
             const table =
             row[1];
+
 
             const item =
             row[2];
 
+
             const qty =
             Number(row[3]) || 0;
+
 
             const price =
             Number(row[4]) || 0;
 
+
             const total =
             Number(row[5]) || 0;
+
 
             const status =
             row[6] || "New";
 
+
             const orderId =
-            String(row[7] || "");
+            String(
+                row[7] || ""
+            );
 
 
             if(!orderId){
@@ -587,14 +953,9 @@ async function loadOrders(){
 
 
             orders[orderId]
-            .total += total;
+            .total +=
+            total;
 
-
-            /*
-              Agar kisi order ki status
-              later row me updated ho,
-              latest status rakhenge.
-            */
 
             orders[orderId]
             .status =
@@ -604,12 +965,12 @@ async function loadOrders(){
 
 
         const newOrders =
-        Object.values(orders);
+        Object.values(
+            orders
+        );
 
 
-        /*
-           New order notification
-        */
+        /* CHECK NEW ORDER */
 
         checkNewOrders(
             newOrders
@@ -620,7 +981,7 @@ async function loadOrders(){
         newOrders;
 
 
-        // नए orders सबसे ऊपर
+        /* NEWEST FIRST */
 
         allOrders.reverse();
 
@@ -675,130 +1036,177 @@ function renderOrders(){
     box.innerHTML = "";
 
 
-    allOrders.forEach(order=>{
+    allOrders.forEach(
+        order=>{
 
-        const card =
-        document.createElement(
-            "div"
-        );
-
-
-        card.className =
-        "order " +
-        String(
-            order.status
-        ).toLowerCase();
+            const card =
+            document.createElement(
+                "div"
+            );
 
 
-        let itemsHTML = "";
+            card.className =
+            "order " +
+            String(
+                order.status
+            ).toLowerCase();
 
 
-        order.items.forEach(item=>{
+            let itemsHTML =
+            "";
 
-            itemsHTML += `
 
-                <div class="item">
+            order.items.forEach(
+                item=>{
 
-                    <span>
-                        ${escapeHTML(item.name)}
-                        × ${item.qty}
-                    </span>
+                    itemsHTML += `
 
-                    <span>
-                        ₹${item.total}
-                    </span>
+                        <div class="item">
+
+                            <span>
+
+                                ${escapeHTML(
+                                    item.name
+                                )}
+
+                                × ${item.qty}
+
+                            </span>
+
+
+                            <span>
+
+                                ₹${item.total}
+
+                            </span>
+
+                        </div>
+
+                    `;
+
+                }
+            );
+
+
+            card.innerHTML = `
+
+                <div class="order-head">
+
+                    <div class="table">
+
+                        🪑 Table
+                        ${escapeHTML(
+                            order.table
+                        )}
+
+                    </div>
+
+
+                    <div class="time">
+
+                        ${escapeHTML(
+                            order.time
+                        )}
+
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    ${itemsHTML}
+
+                </div>
+
+
+                <div class="total">
+
+                    Total:
+                    ₹${order.total}
+
+                </div>
+
+
+                <div class="status">
+
+                    Status:
+                    ${escapeHTML(
+                        order.status
+                    )}
+
+                </div>
+
+
+                <div class="buttons">
+
+
+                    <button
+                        class="prepare"
+                        onclick="changeStatus(
+                            '${escapeAttribute(
+                                order.orderId
+                            )}',
+                            'Preparing'
+                        )">
+
+                        🔥 Preparing
+
+                    </button>
+
+
+                    <button
+                        class="complete"
+                        onclick="changeStatus(
+                            '${escapeAttribute(
+                                order.orderId
+                            )}',
+                            'Complete'
+                        )">
+
+                        ✅ Complete
+
+                    </button>
+
+
+                    <button
+                        class="delivered"
+                        onclick="changeStatus(
+                            '${escapeAttribute(
+                                order.orderId
+                            )}',
+                            'Delivered'
+                        )">
+
+                        🚚 Delivered
+
+                    </button>
+
+
+                    <button
+                        class="delete"
+                        onclick="deleteOrder(
+                            '${escapeAttribute(
+                                order.orderId
+                            )}'
+                        )">
+
+                        🗑️ Delete
+
+                    </button>
+
 
                 </div>
 
             `;
 
-        });
 
+            box.appendChild(
+                card
+            );
 
-        card.innerHTML = `
-
-            <div class="order-head">
-
-                <div class="table">
-                    🪑 Table
-                    ${escapeHTML(order.table)}
-                </div>
-
-                <div class="time">
-                    ${escapeHTML(order.time)}
-                </div>
-
-            </div>
-
-
-            <div>
-
-                ${itemsHTML}
-
-            </div>
-
-
-            <div class="total">
-
-                Total:
-                ₹${order.total}
-
-            </div>
-
-
-            <div class="status">
-
-                Status:
-                ${escapeHTML(order.status)}
-
-            </div>
-
-
-            <div class="buttons">
-
-                <button
-                    class="prepare"
-                    onclick="changeStatus('${escapeAttribute(order.orderId)}','Preparing')">
-
-                    🔥 Preparing
-
-                </button>
-
-
-                <button
-                    class="complete"
-                    onclick="changeStatus('${escapeAttribute(order.orderId)}','Complete')">
-
-                    ✅ Complete
-
-                </button>
-
-
-                <button
-                    class="delivered"
-                    onclick="changeStatus('${escapeAttribute(order.orderId)}','Delivered')">
-
-                    🚚 Delivered
-
-                </button>
-
-
-                <button
-                    class="delete"
-                    onclick="deleteOrder('${escapeAttribute(order.orderId)}')">
-
-                    🗑️ Delete
-
-                </button>
-
-            </div>
-
-        `;
-
-
-        box.appendChild(card);
-
-    });
+        }
+    );
 
 }
 
@@ -910,7 +1318,9 @@ async function deleteOrder(
 
 /* SECURITY */
 
-function escapeHTML(value){
+function escapeHTML(
+    value
+){
 
     return String(value)
 
@@ -942,9 +1352,13 @@ function escapeHTML(value){
 }
 
 
-function escapeAttribute(value){
+function escapeAttribute(
+    value
+){
 
-    return escapeHTML(value);
+    return escapeHTML(
+        value
+    );
 
 }
 
@@ -954,14 +1368,11 @@ function escapeAttribute(value){
 loadOrders();
 
 
-/*
-   हर 10 सेकंड में kitchen
-   नए orders check करेगा.
-*/
+/* CHECK EVERY 15 SECONDS */
 
 setInterval(
     loadOrders,
-    10000
+    15000
 );
 
 </script>
